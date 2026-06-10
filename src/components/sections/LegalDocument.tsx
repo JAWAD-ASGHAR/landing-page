@@ -6,6 +6,25 @@ import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import type { LegalSection } from "@/lib/content";
 import { legalFooterLinks, site } from "@/lib/content";
 
+function scrollToLegalSection(
+  event: React.MouseEvent<HTMLAnchorElement>,
+  id: string,
+) {
+  event.preventDefault();
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  target.scrollIntoView({
+    behavior: prefersReducedMotion ? "auto" : "smooth",
+    block: "start",
+  });
+  window.history.replaceState(null, "", `#${id}`);
+}
+
 type LegalDocumentProps = {
   eyebrow: string;
   title: string;
@@ -62,6 +81,7 @@ export function LegalDocument({
                     <li key={section.id}>
                       <a
                         href={`#${section.id}`}
+                        onClick={(event) => scrollToLegalSection(event, section.id)}
                         className="text-sm text-muted-foreground transition-colors hover:text-accent-blue"
                       >
                         {section.title}
@@ -109,8 +129,8 @@ export function LegalDocument({
       </section>
 
       <section className="border-t border-border bg-[#e6e6ea] py-12">
-        <div className="container-main flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+        <div className="container-main flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-xl">
             <p className="heading-display text-lg font-semibold text-foreground">
               Questions about this document?
             </p>
@@ -125,19 +145,19 @@ export function LegalDocument({
               .
             </p>
           </div>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {legalFooterLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="nav-link text-muted-foreground transition-colors hover:text-foreground"
+                className="nav-link inline-flex h-11 items-center text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.label}
               </Link>
             ))}
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center rounded-full bg-dark px-6 py-3 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-dark-muted"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-dark px-6 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-dark-muted"
             >
               Contact us
             </Link>
