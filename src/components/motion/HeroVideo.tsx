@@ -11,6 +11,7 @@ import { useMounted } from "@/lib/use-mounted";
 const CROSSFADE_MS = 9000;
 const FADE_DURATION_MS = 1800;
 const PRELOAD_BEFORE_END_MS = 5000;
+const MOBILE_VIDEO_DELAY_MS = 500;
 
 type HeroVideoProps = {
   className?: string;
@@ -41,6 +42,7 @@ function HeroPoster({
 /** One video element — swaps source on change. Safer on iPhone memory limits. */
 function HeroSingleVideoCarousel({ className }: { className?: string }) {
   const siteLoaderReady = useSiteLoaderReady();
+  const [videoAllowed, setVideoAllowed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -49,7 +51,21 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
   const videoSrc = getHeroVideoSrc(asset, true);
 
   useEffect(() => {
-    if (!siteLoaderReady) return;
+    if (!siteLoaderReady) {
+      setVideoAllowed(false);
+      return;
+    }
+
+    const timer = window.setTimeout(
+      () => setVideoAllowed(true),
+      MOBILE_VIDEO_DELAY_MS,
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [siteLoaderReady]);
+
+  useEffect(() => {
+    if (!videoAllowed) return;
 
     const nextIndex = (activeIndex + 1) % HERO_VIDEOS.length;
     const nextAsset = HERO_VIDEOS[nextIndex] ?? HERO_VIDEOS[0];
@@ -70,10 +86,10 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
       window.clearTimeout(preloadTimer);
       window.clearTimeout(switchTimer);
     };
-  }, [activeIndex, siteLoaderReady]);
+  }, [activeIndex, videoAllowed]);
 
   useEffect(() => {
-    if (!siteLoaderReady) return;
+    if (!videoAllowed) return;
 
     const video = videoRef.current;
     if (!video) return;
@@ -94,14 +110,14 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
       video.removeEventListener("loadeddata", handleReady);
       video.removeEventListener("canplay", handleReady);
     };
-  }, [videoSrc, siteLoaderReady]);
+  }, [videoSrc, videoAllowed]);
 
   return (
     <div className={cn("absolute inset-0 bg-[#111111]", className)} aria-hidden>
       {HERO_VIDEOS.map((item, index) => (
         <HeroPoster key={item.poster} asset={item} isActive={index === activeIndex} />
       ))}
-      {siteLoaderReady ? (
+      {videoAllowed ? (
         <>
           <video
             ref={videoRef}
