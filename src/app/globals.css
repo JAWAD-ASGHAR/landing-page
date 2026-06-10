@@ -2,25 +2,181 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  --muted: #f5f5f7;
+  --muted-foreground: #6b7280;
+  --border: #e5e7eb;
+  --accent-blue: #4a7fd4;
+  --accent-blue-light: #eef4fc;
+  --dark: #0a0a0a;
+  --dark-muted: #1a1a1a;
+  --cta-soft: #e8eef6;
+  --section-padding: clamp(5rem, 10vw, 8rem);
+  --container-max: 80rem;
+  --stack-sticky-base: 5.5rem;
+  --stack-sticky-step: 1.25rem;
+  --stack-card-height: 85vh;
+  --stack-card-gap: 6rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-blue-light: var(--accent-blue-light);
+  --color-dark: var(--dark);
+  --color-dark-muted: var(--dark-muted);
+  --color-cta-soft: var(--cta-soft);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+  --font-serif: var(--font-source-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.section-padding {
+  padding-block: var(--section-padding);
+}
+
+.container-main {
+  width: min(100% - 2.5rem, var(--container-max));
+  margin-inline: auto;
+}
+
+.heading-display {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+}
+
+.nav-link {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.placeholder-skeleton {
+  background: linear-gradient(135deg, #ececef 0%, #dfe2e8 50%, #ececef 100%);
+  border: 1px dashed var(--border);
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  padding: 1.5rem;
+}
+
+.feature-number {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(6rem, 14vw, 11rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.06);
+  user-select: none;
+  pointer-events: none;
+}
+
+.quote-serif {
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-style: italic;
+}
+
+/* Stacked sticky cards — each card pins and the next covers it */
+.stack-section {
+  overflow: visible;
+  padding-bottom: 100vh;
+}
+
+.stack-card {
+  position: sticky;
+  height: var(--stack-card-height);
+  margin-bottom: var(--stack-card-gap);
+  overflow: hidden;
+  border-radius: 2.5rem;
+  transform-origin: top center;
+  isolation: isolate;
+}
+
+.stack-card:last-child {
+  margin-bottom: 0;
+}
+
+.stack-card-shell {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-origin: top center;
+  will-change: filter;
+}
+
+.stack-card-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.stack-card-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+@keyframes hero-logo-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-logo-marquee {
+  animation: hero-logo-marquee 45s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-logo-marquee {
+    animation: none;
+  }
 }
