@@ -1,13 +1,30 @@
 export type HeroVideoAsset = {
   src: string;
+  mobileSrc: string;
   poster: string;
 };
 
 export const HERO_VIDEOS: readonly HeroVideoAsset[] = [
-  { src: "/videos/hero1.mp4", poster: "/videos/hero1.webp" },
-  { src: "/videos/hero2.mp4", poster: "/videos/hero2.webp" },
-  { src: "/videos/hero3.mp4", poster: "/videos/hero3.webp" },
+  {
+    src: "/videos/hero1.mp4",
+    mobileSrc: "/videos/mobile/hero1.mp4",
+    poster: "/videos/hero1.webp",
+  },
+  {
+    src: "/videos/hero2.mp4",
+    mobileSrc: "/videos/mobile/hero2.mp4",
+    poster: "/videos/hero2.webp",
+  },
+  {
+    src: "/videos/hero3.mp4",
+    mobileSrc: "/videos/mobile/hero3.mp4",
+    poster: "/videos/hero3.webp",
+  },
 ] as const;
+
+export function getHeroVideoSrc(asset: HeroVideoAsset, isMobile: boolean) {
+  return isMobile ? asset.mobileSrc : asset.src;
+}
 
 const LOADER_MIN_MS = 600;
 const LOADER_TIMEOUT_MS = 5000;

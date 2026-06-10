@@ -10,6 +10,8 @@ import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { isMobileDevice } from "@/lib/device-capabilities";
 import { services } from "@/lib/content";
+import { useSiteLoaderReady } from "@/lib/site-loader-ready";
+import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { useMounted } from "@/lib/use-mounted";
 
 const STICKY_BASE = 72;
@@ -73,7 +75,10 @@ type Service = (typeof services)[number];
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
-  const staticStack = !mounted || reducedMotion;
+  const siteLoaderReady = useSiteLoaderReady();
+  const { isMobile } = useDeviceCapabilities();
+  const staticStack =
+    !mounted || reducedMotion || (isMobile && !siteLoaderReady);
   const stackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

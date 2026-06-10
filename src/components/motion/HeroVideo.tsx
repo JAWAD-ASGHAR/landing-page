@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { HERO_VIDEOS } from "@/lib/hero-videos";
+import { getHeroVideoSrc, HERO_VIDEOS } from "@/lib/hero-videos";
+import { useSiteLoaderReady } from "@/lib/site-loader-ready";
 import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { useMounted } from "@/lib/use-mounted";
 
@@ -39,13 +40,17 @@ function HeroPoster({
 
 /** One video element — swaps source on change. Safer on iPhone memory limits. */
 function HeroSingleVideoCarousel({ className }: { className?: string }) {
+  const siteLoaderReady = useSiteLoaderReady();
   const [activeIndex, setActiveIndex] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const preloadRef = useRef<HTMLVideoElement>(null);
   const asset = HERO_VIDEOS[activeIndex] ?? HERO_VIDEOS[0];
+  const videoSrc = getHeroVideoSrc(asset, true);
 
   useEffect(() => {
+    if (!siteLoaderReady) return;
+
     const nextIndex = (activeIndex + 1) % HERO_VIDEOS.length;
     const nextAsset = HERO_VIDEOS[nextIndex] ?? HERO_VIDEOS[0];
     const preloadDelay = CROSSFADE_MS - PRELOAD_BEFORE_END_MS;
@@ -53,7 +58,7 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
     const preloadTimer = window.setTimeout(() => {
       const preloadVideo = preloadRef.current;
       if (!preloadVideo) return;
-      preloadVideo.src = nextAsset.src;
+      preloadVideo.src = getHeroVideoSrc(nextAsset, true);
       preloadVideo.load();
     }, preloadDelay);
 
@@ -65,14 +70,16 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
       window.clearTimeout(preloadTimer);
       window.clearTimeout(switchTimer);
     };
-  }, [activeIndex]);
+  }, [activeIndex, siteLoaderReady]);
 
   useEffect(() => {
+    if (!siteLoaderReady) return;
+
     const video = videoRef.current;
     if (!video) return;
 
     setVideoReady(false);
-    video.src = asset.src;
+    video.src = videoSrc;
     video.load();
 
     const handleReady = () => {
@@ -87,35 +94,38 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
       video.removeEventListener("loadeddata", handleReady);
       video.removeEventListener("canplay", handleReady);
     };
-  }, [asset.src]);
+  }, [videoSrc, siteLoaderReady]);
 
   return (
     <div className={cn("absolute inset-0 bg-[#111111]", className)} aria-hidden>
       {HERO_VIDEOS.map((item, index) => (
         <HeroPoster key={item.poster} asset={item} isActive={index === activeIndex} />
       ))}
-      <video
-        ref={videoRef}
-        poster={asset.poster}
-        muted
-        loop
-        playsInline
-        autoPlay
-        preload="metadata"
-        className={cn(
-          "absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out",
-          videoReady ? "opacity-100" : "opacity-0",
-        )}
-        style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
-      />
-      <video
-        ref={preloadRef}
-        muted
-        playsInline
-        preload="none"
-        className="pointer-events-none absolute h-0 w-0 opacity-0"
-        aria-hidden
-      />
+      {siteLoaderReady ? (
+        <>
+          <video
+            ref={videoRef}
+            poster={asset.poster}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className={cn(
+              "absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out",
+              videoReady ? "opacity-100" : "opacity-0",
+            )}
+            style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
+          />
+          <video
+            ref={preloadRef}
+            muted
+            playsInline
+            preload="none"
+            className="pointer-events-none absolute h-0 w-0 opacity-0"
+            aria-hidden
+          />
+        </>
+      ) : null}
     </div>
   );
 }

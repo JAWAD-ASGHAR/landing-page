@@ -15,6 +15,9 @@ const WEBP_QUALITY = 82;
 const POSTER_WIDTH = 1920;
 const VIDEO_CRF = 28;
 const VIDEO_MAX_WIDTH = 1920;
+const MOBILE_VIDEO_CRF = 32;
+const MOBILE_VIDEO_MAX_WIDTH = 720;
+const mobileVideosDir = path.join(videosDir, "mobile");
 
 async function walk(dir) {
   const entries = await fsp.readdir(dir, { withFileTypes: true });
@@ -59,6 +62,51 @@ async function convertImageToWebp(filePath) {
   );
 
   return outputPath;
+}
+
+function optimizeVideoVariant(inputPath, outputPath, maxWidth, crf) {
+  const ext = path.extname(inputPath);
+  const tempPath = `${outputPath.slice(0, -ext.length)}.optimized.mp4`;
+  const inputStat = fs.statSync(inputPath);
+  const outputExisted = fs.existsSync(outputPath);
+  const outputStat = outputExisted ? fs.statSync(outputPath) : null;
+
+  if (outputStat && outputStat.mtimeMs >= inputStat.mtimeMs) {
+    console.log(
+      `  skip video ${path.relative(publicDir, outputPath)} (up to date)`,
+    );
+    return;
+  }
+
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+
+  execFileSync(
+    ffmpegPath.path,
+    [
+      "-y",
+      "-i",
+      inputPath,
+      "-an",
+      "-vf",
+      `scale='min(${maxWidth},iw)':-2`,
+      "-c:v",
+      "libx264",
+      "-crf",
+      String(crf),
+      "-preset",
+      "slow",
+      "-movflags",
+      "+faststart",
+      tempPath,
+    ],
+    { stdio: "inherit" },
+  );
+
+  fs.renameSync(tempPath, outputPath);
+  const nextStat = fs.statSync(outputPath);
+  console.log(
+    `  video ${path.relative(publicDir, inputPath)} -> ${path.relative(publicDir, outputPath)} (${formatBytes(inputStat.size)} -> ${formatBytes(nextStat.size)})`,
+  );
 }
 
 function optimizeVideo(inputPath) {
@@ -162,6 +210,14 @@ async function main() {
   for (const videoPath of videos) {
     optimizeVideo(videoPath);
     await createVideoPoster(videoPath);
+
+    const baseName = path.basename(videoPath);
+    optimizeVideoVariant(
+      videoPath,
+      path.join(mobileVideosDir, baseName),
+      MOBILE_VIDEO_MAX_WIDTH,
+      MOBILE_VIDEO_CRF,
+    );
   }
 
   console.log("\nDone.");

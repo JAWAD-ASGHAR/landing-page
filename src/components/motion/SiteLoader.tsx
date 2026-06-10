@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { site } from "@/lib/content";
 import { preloadHeroContent } from "@/lib/hero-videos";
 import { LoaderMark } from "@/components/motion/LoaderMark";
+import { SiteLoaderReadyContext } from "@/lib/site-loader-ready";
 import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 
 type Phase = "loading" | "exit" | "done";
@@ -24,7 +25,6 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
   const reducedMotion = useReducedMotion();
   const { isMobile } = useDeviceCapabilities();
   const [phase, setPhase] = useState<Phase>("loading");
-  const [childrenVisible, setChildrenVisible] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -51,7 +51,6 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (phase === "done") {
-      setChildrenVisible(true);
       document.body.style.overflow = "";
       return;
     }
@@ -61,6 +60,9 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
       document.body.style.overflow = "";
     };
   }, [phase]);
+
+  const contentRevealed = phase !== "loading";
+  const siteLoaderReady = contentRevealed;
 
   const isExiting = phase === "exit";
   const willChange = isExiting ? "transform" : "auto";
@@ -74,8 +76,17 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
     : { duration: 0.95, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
-    <>
-      {childrenVisible ? children : null}
+    <SiteLoaderReadyContext.Provider value={siteLoaderReady}>
+      <div
+        style={{
+          opacity: contentRevealed ? 1 : 0,
+          transition: "opacity 0.3s ease",
+          pointerEvents: phase === "done" ? undefined : "none",
+        }}
+        aria-hidden={!contentRevealed}
+      >
+        {children}
+      </div>
 
       <AnimatePresence>
         {phase !== "done" && (
@@ -196,6 +207,6 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </SiteLoaderReadyContext.Provider>
   );
 }
