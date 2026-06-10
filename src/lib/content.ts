@@ -372,6 +372,32 @@ export const trustSignals = [
   "Trusted by practices nationwide",
 ] as const;
 
+export const aboutPage = {
+  eyebrow: "About Us",
+  title: "Supporting Australian healthcare",
+  titleAccent: "since 2003.",
+  description:
+    "For over two decades we've partnered with GPs and clinics nationwide — easing the administrative burden so doctors can focus on what matters most: their patients.",
+  highlights: [
+    { label: "Years of experience", value: "22+" },
+    { label: "Core service areas", value: "6" },
+    { label: "Coverage", value: "Australia-wide" },
+  ],
+} as const;
+
+export const whatWeDoPage = {
+  eyebrow: "What We Do",
+  title: "Everything your practice needs",
+  titleAccent: "under one roof.",
+  description:
+    "From building your brand to managing daily operations, finances, and supplies — tailored solutions that make your clinic more efficient, compliant, and patient-focused.",
+  highlights: [
+    { label: "Service areas", value: "6" },
+    { label: "Consultation", value: "Free" },
+    { label: "Focus", value: "General practice" },
+  ],
+} as const;
+
 export const contactPage = {
   eyebrow: "Contact Us",
   title: "Let's talk about",

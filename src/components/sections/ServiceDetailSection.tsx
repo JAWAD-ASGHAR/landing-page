@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import { ParallaxImage } from "@/components/motion/ParallaxImage";
+import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 type ServiceDetail = {
@@ -7,6 +8,8 @@ type ServiceDetail = {
   title: string;
   shortTitle: string;
   comingSoon?: boolean;
+  stackImage: string;
+  stackImageLabel: string;
   details: {
     intro: string;
     benefits: readonly string[];
@@ -23,92 +26,103 @@ export function ServiceDetailSection({
   index: number;
 }) {
   const reversed = index % 2 === 1;
+  const muted = index % 2 === 1;
 
   return (
     <section
       id={service.id}
-      className="scroll-mt-28 section-padding border-t border-border"
+      className={`scroll-mt-28 section-padding overflow-hidden ${muted ? "bg-[#e6e6ea]" : "bg-white"}`}
     >
       <div className="container-main">
         <div
-          className={`grid items-start gap-12 lg:grid-cols-2 lg:gap-16 ${reversed ? "lg:[&>*:first-child]:order-2" : ""}`}
+          className={`grid items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20 ${reversed ? "lg:[&>*:first-child]:order-2" : ""}`}
         >
-          <ScrollReveal direction={reversed ? "right" : "left"}>
-            <div>
-              <p className="eyebrow mb-4">
-                Service {String(index + 1).padStart(2, "0")}
-              </p>
-              <h2 className="heading-display text-3xl font-semibold text-foreground sm:text-4xl">
-                {service.title}
-              </h2>
-              {service.comingSoon && (
-                <span className="mt-3 inline-block rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
-                  Coming Soon
-                </span>
-              )}
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-                {service.details.intro}
-              </p>
-              <div className="mt-8">
-                <Button href="/contact">Book a Free Consultation</Button>
+          <ParallaxLayer speed={reversed ? -0.04 : 0.04}>
+            <ScrollReveal direction={reversed ? "right" : "left"}>
+              <div>
+                <p className="eyebrow mb-4">{service.shortTitle}</p>
+                <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
+                  {service.title}
+                </h2>
+                {service.comingSoon ? (
+                  <span className="mt-4 inline-block rounded-full bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                    Coming Soon
+                  </span>
+                ) : null}
+                <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
+                  {service.details.intro}
+                </p>
+                <div className="mt-8">
+                  <Button href="/contact">Book a Free Consultation</Button>
+                </div>
               </div>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+          </ParallaxLayer>
 
           <ScrollReveal direction={reversed ? "left" : "right"} delay={0.1}>
-            <ImagePlaceholder
-              label={`${service.title} — service visual`}
-              aspectRatio="aspect-[4/3]"
+            <ParallaxImage
+              src={service.stackImage}
+              alt={service.stackImageLabel}
+              className="aspect-[4/3] min-h-[18rem] rounded-3xl"
+              speed={0.12}
+              sizes="(min-width: 1024px) 45vw, 100vw"
             />
           </ScrollReveal>
         </div>
 
-        <div className="mt-16 grid gap-10 lg:grid-cols-3">
+        <div className="mt-14 grid gap-5 lg:grid-cols-3 lg:gap-6">
           <ScrollReveal delay={0.05}>
-            <div className="rounded-2xl border border-border bg-white p-7">
-              <h3 className="heading-display text-lg font-semibold text-foreground">
+            <article className="h-full rounded-3xl bg-white p-7 sm:p-8">
+              <h3 className="heading-display text-lg font-semibold">
                 Benefits & Features
               </h3>
-              <ol className="mt-5 space-y-4">
-                {service.details.benefits.map((benefit, i) => (
-                  <li key={benefit} className="flex gap-3 text-sm text-muted-foreground">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-blue-light text-xs font-semibold text-accent-blue">
-                      {i + 1}
-                    </span>
+              <ul className="mt-5 space-y-3.5">
+                {service.details.benefits.map((benefit) => (
+                  <li
+                    key={benefit}
+                    className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
+                  >
+                    <span
+                      className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent-blue"
+                      aria-hidden
+                    />
                     {benefit}
                   </li>
                 ))}
-              </ol>
-            </div>
+              </ul>
+            </article>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <div className="rounded-2xl border border-border bg-white p-7">
-              <h3 className="heading-display text-lg font-semibold text-foreground">
+            <article className="h-full rounded-3xl bg-white p-7 sm:p-8">
+              <h3 className="heading-display text-lg font-semibold">
                 Who We Help
               </h3>
               <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
                 {service.details.whoWeHelp}
               </p>
-            </div>
+            </article>
           </ScrollReveal>
 
           <ScrollReveal delay={0.15}>
-            <div className="rounded-2xl border border-border bg-white p-7">
-              <h3 className="heading-display text-lg font-semibold text-foreground">
+            <article className="h-full rounded-3xl bg-white p-7 sm:p-8">
+              <h3 className="heading-display text-lg font-semibold">
                 How It Works
               </h3>
-              <ol className="mt-5 space-y-4">
-                {service.details.steps.map((step, i) => (
-                  <li key={step} className="flex gap-3 text-sm text-muted-foreground">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-blue-light text-xs font-semibold text-accent-blue">
-                      {i + 1}
+              <ol className="mt-5 space-y-3.5">
+                {service.details.steps.map((step, stepIndex) => (
+                  <li
+                    key={step}
+                    className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.1em] text-accent-blue">
+                      {String(stepIndex + 1).padStart(2, "0")}
                     </span>
                     {step}
                   </li>
                 ))}
               </ol>
-            </div>
+            </article>
           </ScrollReveal>
         </div>
       </div>

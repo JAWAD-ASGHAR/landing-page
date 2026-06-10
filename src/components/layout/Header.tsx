@@ -12,45 +12,53 @@ type HeaderProps = {
   placement?: "site" | "hero";
 };
 
-type HeaderContentProps = {
+type HeaderBarProps = {
   light?: boolean;
   mobileOpen: boolean;
-  setMobileOpen: (open: boolean | ((current: boolean) => boolean)) => void;
+  onToggleMobile: () => void;
   pathname: string;
+  showDesktopNav?: boolean;
 };
 
-function HeaderContent({
+function SiteLogo({ light = false }: { light?: boolean }) {
+  return (
+    <Link
+      href="/"
+      className={cn("site-logo shrink-0", light && "site-logo--light")}
+      aria-label={site.name}
+    >
+      <span
+        className={cn(
+          "site-logo-mark",
+          light ? "text-white" : "text-foreground",
+        )}
+      >
+        {site.logoMark}
+      </span>
+      <span
+        className={cn(
+          "site-logo-suffix",
+          light ? "text-white/85" : "text-foreground",
+        )}
+      >
+        {site.logoSuffix}
+      </span>
+    </Link>
+  );
+}
+
+function HeaderBar({
   light = false,
   mobileOpen,
-  setMobileOpen,
+  onToggleMobile,
   pathname,
-}: HeaderContentProps) {
+  showDesktopNav = true,
+}: HeaderBarProps) {
   return (
-    <>
-      <div className="container-main grid h-[4.5rem] grid-cols-[1fr_auto_1fr] items-center">
-        <Link
-          href="/"
-          className={cn("site-logo shrink-0", light && "site-logo--light")}
-          aria-label={site.name}
-        >
-          <span
-            className={cn(
-              "site-logo-mark",
-              light ? "text-white" : "text-foreground",
-            )}
-          >
-            {site.logoMark}
-          </span>
-          <span
-            className={cn(
-              "site-logo-suffix",
-              light ? "text-white/85" : "text-foreground",
-            )}
-          >
-            {site.logoSuffix}
-          </span>
-        </Link>
+    <div className="container-main grid h-[4.5rem] grid-cols-[1fr_auto_1fr] items-center">
+      <SiteLogo light={light} />
 
+      {showDesktopNav ? (
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Main">
           {navLinks.map((link) => (
             <Link
@@ -71,67 +79,94 @@ function HeaderContent({
             </Link>
           ))}
         </nav>
+      ) : (
+        <span className="hidden lg:block" aria-hidden />
+      )}
 
-        <div className="hidden justify-end lg:flex">
-          <Button href="/contact" variant={light ? "hero" : "primary"}>
-            Book Consultation
-          </Button>
-        </div>
+      <div className="hidden justify-end lg:flex">
+        <Button href="/contact" variant={light ? "hero" : "primary"}>
+          Book Consultation
+        </Button>
+      </div>
 
+      <button
+        type="button"
+        className={cn(
+          "col-start-3 inline-flex items-center justify-end p-2 lg:hidden",
+          light ? "text-white" : "text-foreground",
+        )}
+        aria-label={mobileOpen ? "Close menu" : "Open menu"}
+        aria-expanded={mobileOpen}
+        onClick={onToggleMobile}
+      >
+        {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+      </button>
+    </div>
+  );
+}
+
+type MobileMenuProps = {
+  light?: boolean;
+  onClose: () => void;
+  pathname: string;
+};
+
+function MobileMenu({ light = false, onClose, pathname }: MobileMenuProps) {
+  return (
+    <div
+      className={cn(
+        "fixed inset-0 z-[100] flex flex-col lg:hidden",
+        light ? "bg-dark text-white" : "bg-white text-foreground",
+      )}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile navigation"
+    >
+      <div className="container-main flex h-[4.5rem] shrink-0 items-center justify-between">
+        <SiteLogo light={light} />
         <button
           type="button"
-          className={cn(
-            "col-start-3 inline-flex items-center justify-end p-2 lg:hidden",
-            light ? "text-white" : "text-foreground",
-          )}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileOpen}
-          onClick={() => setMobileOpen((open) => !open)}
+          className={cn("p-2", light ? "text-white" : "text-foreground")}
+          aria-label="Close menu"
+          onClick={onClose}
         >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          <X size={22} />
         </button>
       </div>
 
-      {mobileOpen && (
-        <div
-          className={cn(
-            "border-t px-4 py-6 lg:hidden",
-            light
-              ? "border-white/15 bg-black/80 backdrop-blur-md"
-              : "border-border bg-white",
-          )}
+      <nav
+        className="container-main flex flex-1 flex-col gap-2 py-8"
+        aria-label="Mobile"
+      >
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            onClick={onClose}
+            className={cn(
+              "rounded-2xl px-4 py-4 text-sm font-semibold uppercase tracking-[0.12em] transition-colors",
+              light
+                ? pathname === link.href
+                  ? "bg-white/10 text-white"
+                  : "text-white/75 hover:bg-white/5 hover:text-white"
+                : pathname === link.href
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+            )}
+          >
+            {link.label}
+          </Link>
+        ))}
+        <Button
+          href="/contact"
+          className="mt-4 w-full"
+          variant={light ? "hero" : "primary"}
+          onClick={onClose}
         >
-          <nav className="flex flex-col gap-4" aria-label="Mobile">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "nav-link",
-                  light
-                    ? pathname === link.href
-                      ? "text-white"
-                      : "text-white/75"
-                    : pathname === link.href
-                      ? "text-foreground"
-                      : "text-muted-foreground",
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Button
-              href="/contact"
-              className="mt-2 w-full"
-              variant={light ? "hero" : "primary"}
-            >
-              Book Consultation
-            </Button>
-          </nav>
-        </div>
-      )}
-    </>
+          Book Consultation
+        </Button>
+      </nav>
+    </div>
   );
 }
 
@@ -142,6 +177,25 @@ export function Header({ placement = "site" }: HeaderProps) {
   const [revealed, setRevealed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const lastScrollY = useRef(0);
+
+  const closeMobile = () => setMobileOpen(false);
+  const toggleMobile = () => setMobileOpen((open) => !open);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   useEffect(() => {
     if (isHome && placement === "site") {
@@ -171,54 +225,75 @@ export function Header({ placement = "site" }: HeaderProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome, placement]);
 
+  const mobileMenu = mobileOpen ? (
+    <MobileMenu
+      light={placement === "hero"}
+      onClose={closeMobile}
+      pathname={pathname}
+    />
+  ) : null;
+
   if (placement === "hero") {
     if (!isHome) return null;
 
     return (
-      <header className="absolute inset-x-0 top-0 z-20 bg-transparent">
-        <HeaderContent
-          light
-          mobileOpen={mobileOpen}
-          setMobileOpen={setMobileOpen}
-          pathname={pathname}
-        />
-      </header>
+      <>
+        <header
+          className={cn(
+            "absolute inset-x-0 top-0 z-20",
+            mobileOpen ? "bg-dark" : "bg-transparent",
+          )}
+        >
+          <HeaderBar
+            light
+            mobileOpen={mobileOpen}
+            onToggleMobile={toggleMobile}
+            pathname={pathname}
+            showDesktopNav
+          />
+        </header>
+        {mobileMenu}
+      </>
     );
   }
 
   if (isHome) {
     return (
-      <header
-        className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out",
-          revealed
-            ? "translate-y-0 border-b border-border/60 bg-white/95 shadow-sm backdrop-blur-md"
-            : "-translate-y-full pointer-events-none",
-        )}
-      >
-        <HeaderContent
-          mobileOpen={mobileOpen}
-          setMobileOpen={setMobileOpen}
-          pathname={pathname}
-        />
-      </header>
+      <>
+        <header
+          className={cn(
+            "fixed inset-x-0 top-0 z-50 border-b border-border bg-white transition-transform duration-300 ease-out",
+            revealed
+              ? "translate-y-0 shadow-sm"
+              : "-translate-y-full pointer-events-none",
+          )}
+        >
+          <HeaderBar
+            mobileOpen={mobileOpen}
+            onToggleMobile={toggleMobile}
+            pathname={pathname}
+          />
+        </header>
+        {mobileMenu}
+      </>
     );
   }
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled
-          ? "border-b border-border/60 bg-white/95 backdrop-blur-md"
-          : "bg-white/80 backdrop-blur-sm",
-      )}
-    >
-      <HeaderContent
-        mobileOpen={mobileOpen}
-        setMobileOpen={setMobileOpen}
-        pathname={pathname}
-      />
-    </header>
+    <>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 border-b border-border bg-white transition-shadow duration-300",
+          scrolled && "shadow-sm",
+        )}
+      >
+        <HeaderBar
+          mobileOpen={mobileOpen}
+          onToggleMobile={toggleMobile}
+          pathname={pathname}
+        />
+      </header>
+      {mobileMenu}
+    </>
   );
 }

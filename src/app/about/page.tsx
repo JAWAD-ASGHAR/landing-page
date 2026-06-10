@@ -1,16 +1,17 @@
-import { Button } from "@/components/ui/Button";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { CTASection } from "@/components/sections/CTASection";
+import { AboutFounderSection } from "@/components/sections/AboutFounderSection";
 import { FAQAccordion } from "@/components/sections/FAQAccordion";
-import { HowItWorks } from "@/components/sections/HowItWorks";
+import { HomeChairReveal } from "@/components/sections/HomeChairReveal";
+import { HowItWorks, HowItWorksIntro } from "@/components/sections/HowItWorks";
+import { PageHeroSection } from "@/components/sections/PageHeroSection";
+import { ChairCTASection } from "@/components/sections/ChairCTASection";
 import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
 import {
+  aboutPage,
   aboutValues,
   faqs,
-  founder,
+  services,
   testimonials,
 } from "@/lib/content";
 import {
@@ -42,99 +43,85 @@ export default function AboutPage() {
           faqPageJsonLd(aboutFaqs),
         ]}
       />
-      <section className="section-padding bg-white">
+
+      <PageHeroSection
+        eyebrow={aboutPage.eyebrow}
+        title={aboutPage.title}
+        titleAccent={aboutPage.titleAccent}
+        description={aboutPage.description}
+        highlights={aboutPage.highlights}
+        tall
+      />
+
+      <section className="section-padding overflow-hidden bg-white">
         <div className="container-main">
           <ScrollReveal>
-            <p className="eyebrow mb-5">About Us</p>
-            <h1 className="heading-display max-w-4xl text-4xl font-semibold text-foreground sm:text-5xl lg:text-[3.25rem]">
-              Supporting Australian Healthcare Since 2003
-            </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-              At Practice Pro Solutions, we&apos;re dedicated to helping medical
-              practices run smarter, smoother, and more sustainably. For over 23
-              years, we&apos;ve partnered with GPs, clinics, and healthcare
-              providers across Australia to deliver tailored solutions that ease
-              the administrative burden and let doctors focus on what matters
-              most — their patients.
-            </p>
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="eyebrow mb-5">Our Mission</p>
+              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
+                Patient care at the heart of what we do
+              </h2>
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground">
+                Running a medical practice comes with real challenges. Our services
+                are designed to make your day easier — streamlining admin,
+                protecting patient data, and improving communication — so your
+                team can deliver the care your community depends on.
+              </p>
+            </div>
           </ScrollReveal>
         </div>
       </section>
 
-      <section className="section-padding bg-surface">
+      <section className="section-padding overflow-hidden bg-dark text-white">
         <div className="container-main">
-          <SectionHeading
-            eyebrow="Our Services"
-            title="Support Across Every Stage of Practice Growth"
-          />
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-            {[
-              "Get seamless patient support through our Virtual Receptionists",
-              "Simplify daily operations with Virtual Practice Management",
-              "Stay financially secure with Accounting & Bookkeeping",
-              "Confident ownership with GP Sale & Purchase",
-              "Affordable supplies with Medical E-commerce",
-              "Build and grow your brand with Practice Media",
-            ].map((item, index) => (
-              <ScrollReveal key={item} delay={index * 0.06}>
-                <li className="flex items-start gap-3 rounded-xl border border-border bg-white p-5 text-sm text-muted-foreground">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-blue-light text-xs font-semibold text-accent-blue">
-                    ✓
-                  </span>
-                  {item}
-                </li>
+          <ScrollReveal>
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="mb-5 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-white/45">
+                What We Offer
+              </p>
+              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
+                Support across every stage of practice growth
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            {services.map((service, index) => (
+              <ScrollReveal key={service.id} delay={index * 0.06}>
+                <article className="h-full rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+                  <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-white/40">
+                    {service.shortTitle}
+                  </p>
+                  <h3 className="heading-display mt-3 text-xl font-semibold">
+                    {service.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-white/55">
+                    {service.description}
+                  </p>
+                </article>
               </ScrollReveal>
             ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-padding">
-        <div className="container-main">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <ScrollReveal direction="left">
-              <ImagePlaceholder
-                label="Dr. Faisal Khan — Founder portrait"
-                aspectRatio="aspect-[4/5]"
-              />
-            </ScrollReveal>
-            <ScrollReveal direction="right" delay={0.1}>
-              <p className="eyebrow mb-4">Founder & GP Specialist</p>
-              <h2 className="heading-display text-3xl font-semibold text-foreground sm:text-4xl">
-                {founder.name}
-              </h2>
-              <p className="mt-2 text-sm font-medium text-accent-blue">
-                {founder.credentials}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">{founder.title}</p>
-              <blockquote className="quote-serif mt-8 border-l-2 border-dark pl-6 text-2xl leading-snug text-foreground">
-                &ldquo;{founder.quote}&rdquo;
-              </blockquote>
-              <p className="mt-6 text-muted-foreground leading-relaxed">
-                {founder.bio}
-              </p>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                {founder.extendedBio}
-              </p>
-              <div className="mt-8">
-                <Button href="/contact">Book a Free Consultation</Button>
-              </div>
-            </ScrollReveal>
           </div>
         </div>
       </section>
 
-      <section className="section-padding bg-surface">
+      <AboutFounderSection />
+
+      <section className="section-padding overflow-hidden bg-white">
         <div className="container-main">
-          <SectionHeading
-            eyebrow="Values & Mission"
-            title="Patient Care at the Heart of What We Do"
-            description="Running a medical practice comes with challenges. Our services are designed to make your day easier — streamlining admin, protecting patient data, and improving communication."
-          />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ScrollReveal>
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="eyebrow mb-5">Values</p>
+              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
+                What guides our work
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {aboutValues.map((value, index) => (
               <ScrollReveal key={value} delay={index * 0.05}>
-                <div className="rounded-xl border border-border bg-white p-5 text-sm text-muted-foreground">
+                <div className="rounded-3xl bg-[#e6e6ea] p-6 text-sm leading-relaxed text-muted-foreground">
                   {value}
                 </div>
               </ScrollReveal>
@@ -143,54 +130,54 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-padding">
+      <section className="section-padding overflow-hidden bg-[#e6e6ea]">
         <div className="container-main">
-          <SectionHeading
-            eyebrow="Testimonials"
-            title="What Our Clients Say"
-            align="center"
-            className="mx-auto mb-12"
-          />
-          <TestimonialCarousel testimonials={testimonials} />
+          <ScrollReveal>
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="eyebrow mb-5">Testimonials</p>
+              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
+                What our clients say
+              </h2>
+            </div>
+          </ScrollReveal>
+          <div className="mt-12">
+            <TestimonialCarousel testimonials={testimonials} />
+          </div>
         </div>
       </section>
 
-      <section className="section-padding bg-surface">
+      <section className="section-padding overflow-hidden bg-dark text-white">
         <div className="container-main">
-          <SectionHeading
-            eyebrow="Process"
-            title="We Follow Simple Steps To Deliver Effective Solutions"
-            description="Each step is designed to ensure your operations run smoothly while keeping patient care front and centre."
-            align="center"
-            className="mx-auto mb-14"
-          />
-          <HowItWorks />
+          <HowItWorksIntro />
+          <div className="mt-16">
+            <HowItWorks />
+          </div>
         </div>
       </section>
 
       <section
         id="faq"
         aria-labelledby="about-faq-heading"
-        className="section-padding"
+        className="section-padding bg-white"
       >
         <div className="container-main">
-          <SectionHeading
-            eyebrow="FAQ"
-            title="Frequently Asked Questions"
-            align="center"
-            className="mx-auto mb-12"
-            titleId="about-faq-heading"
-          />
+          <ScrollReveal>
+            <h2
+              id="about-faq-heading"
+              className="heading-display mb-12 text-center text-3xl font-semibold sm:text-4xl"
+            >
+              Frequently Asked Questions
+            </h2>
+          </ScrollReveal>
           <div className="mx-auto max-w-3xl">
             <FAQAccordion faqs={aboutFaqs} />
           </div>
         </div>
       </section>
 
-      <CTASection
-        title="Partner with a team that understands general practice"
-        description="Since 2003, we've helped Australian GPs streamline operations across six core service areas. Let's talk about your practice."
-      />
+      <HomeChairReveal>
+        <ChairCTASection />
+      </HomeChairReveal>
     </>
   );
 }
