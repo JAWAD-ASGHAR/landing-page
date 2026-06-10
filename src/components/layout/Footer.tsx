@@ -88,7 +88,7 @@ export function Footer() {
 
   if (useReveal) {
     return (
-      <footer className="home-footer-fixed overflow-hidden bg-white text-foreground">
+      <footer className="home-footer-fixed bg-white text-foreground">
         <FooterUtility compact />
         <FooterDisplay />
       </footer>

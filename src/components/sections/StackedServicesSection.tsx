@@ -82,29 +82,45 @@ function serviceTags(shortTitle: string) {
 
 type Service = (typeof services)[number];
 
-const STACK_HEADER_COPY = {
-  eyebrow: "Our Services",
-  title: "Our Specialized Solutions",
-  linkHref: "/what-we-do",
-  linkLabel: "View All Solutions",
-} as const;
+const STACK_HEADER_CENTERED =
+  "Support that grows with your patients";
 
-/** Hide the sticky header while the last card scrolls over it (no fade / resize). */
-function getHeaderPhase(cards: HTMLElement[], header: HTMLElement) {
-  if (!cards.length) return "visible";
+type StackHeaderPhase = "intro" | "centered";
+
+function getHeaderPhase(cards: HTMLElement[], header: HTMLElement): StackHeaderPhase {
+  if (!cards.length) return "intro";
 
   const lastCard = cards[cards.length - 1];
   const deck =
     lastCard.querySelector<HTMLElement>("[data-stack-deck]") ?? lastCard;
   const headerRect = header.getBoundingClientRect();
   const deckRect = deck.getBoundingClientRect();
-  const overlap = headerRect.bottom - deckRect.top;
 
-  if (overlap > 6 || deckRect.bottom <= headerRect.top + 8) {
-    return "hidden";
+  if (deckRect.bottom <= headerRect.top + 8) {
+    return "centered";
   }
 
-  return "visible";
+  if (deckRect.top <= headerRect.top - 8) {
+    return "centered";
+  }
+
+  return "intro";
+}
+
+function applyStackHeaderPhase(
+  header: HTMLElement,
+  phase: StackHeaderPhase,
+  introMarkup: string,
+) {
+  const inner = header.querySelector<HTMLElement>("[data-stack-header-inner]");
+  if (!inner) return;
+
+  if (phase === "intro") {
+    inner.innerHTML = introMarkup;
+    return;
+  }
+
+  inner.innerHTML = `<h2 class="heading-display w-full text-center text-[clamp(1.75rem,5vw,2.75rem)] font-semibold leading-[1.02]">${STACK_HEADER_CENTERED}</h2>`;
 }
 
 function StackSectionHeader({
@@ -116,19 +132,22 @@ function StackSectionHeader({
 }) {
   if (sticky) {
     return (
-      <div ref={headerRef} className="stack-section-intro" data-phase="visible">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div ref={headerRef} className="stack-section-intro">
+        <div
+          data-stack-header-inner
+          className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        >
           <div className="min-w-0">
-            <p className="eyebrow mb-3 sm:mb-4">{STACK_HEADER_COPY.eyebrow}</p>
+            <p className="eyebrow mb-3 sm:mb-4">Our Services</p>
             <h2 className="heading-display max-w-2xl text-[clamp(1.75rem,5vw,2.75rem)] font-semibold leading-[1.02]">
-              {STACK_HEADER_COPY.title}
+              Our Specialized Solutions
             </h2>
           </div>
           <Link
-            href={STACK_HEADER_COPY.linkHref}
+            href="/what-we-do"
             className="inline-flex shrink-0 items-center gap-2 self-start text-xs font-semibold uppercase tracking-[0.12em] text-foreground transition-colors hover:text-accent-blue sm:self-auto"
           >
-            {STACK_HEADER_COPY.linkLabel}
+            View All Solutions
             <ArrowRight size={14} />
           </Link>
         </div>
@@ -139,17 +158,17 @@ function StackSectionHeader({
   return (
     <div className="mb-14 flex flex-col gap-4 sm:mb-16 sm:flex-row sm:items-end sm:justify-between">
       <ScrollReveal>
-        <p className="eyebrow mb-3 sm:mb-4">{STACK_HEADER_COPY.eyebrow}</p>
+        <p className="eyebrow mb-3 sm:mb-4">Our Services</p>
         <h2 className="heading-display max-w-2xl text-[clamp(1.75rem,5vw,2.75rem)] font-semibold leading-[1.02]">
-          {STACK_HEADER_COPY.title}
+          Our Specialized Solutions
         </h2>
       </ScrollReveal>
       <ScrollReveal delay={0.08}>
         <Link
-          href={STACK_HEADER_COPY.linkHref}
+          href="/what-we-do"
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-foreground transition-colors hover:text-accent-blue"
         >
-          {STACK_HEADER_COPY.linkLabel}
+          View All Solutions
           <ArrowRight size={14} />
         </Link>
       </ScrollReveal>
@@ -184,6 +203,12 @@ export function StackedServicesSection() {
       });
     });
 
+    let headerPhase: StackHeaderPhase = "intro";
+    const header = headerRef.current;
+    const introMarkup =
+      header?.querySelector<HTMLElement>("[data-stack-header-inner]")
+        ?.innerHTML ?? "";
+
     const updateDeck = () => {
       cards.forEach((card, index) => {
         const { scale, z, brightness } = getCardDeckState(cards, index);
@@ -203,9 +228,12 @@ export function StackedServicesSection() {
         card.style.pointerEvents = isFront ? "auto" : "none";
       });
 
-      const header = headerRef.current;
-      if (header) {
-        header.dataset.phase = getHeaderPhase(cards, header);
+      if (header && introMarkup) {
+        const phase = getHeaderPhase(cards, header);
+        if (phase !== headerPhase) {
+          headerPhase = phase;
+          applyStackHeaderPhase(header, phase, introMarkup);
+        }
       }
     };
 

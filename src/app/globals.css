@@ -26,7 +26,7 @@
   --stack-card-mobile-image-height: clamp(12rem, 42vh, 18rem);
   --stack-header-z: 30;
   --stack-card-z-base: 50;
-  --footer-reveal-height: clamp(22rem, 50vh, 32rem);
+  --footer-reveal-height: clamp(28rem, 58vh, 32rem);
 }
 
 @theme inline {
@@ -162,7 +162,8 @@ body {
 }
 
 .footer-display-clip {
-  height: clamp(5.5rem, 20vw, 12rem);
+  --footer-display-size: clamp(5rem, 19vw, 15rem);
+  height: calc(var(--footer-display-size) * 0.68);
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -176,7 +177,7 @@ body {
   max-width: none;
   transform: translateX(-50%);
   font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: clamp(5rem, 19vw, 15rem);
+  font-size: var(--footer-display-size);
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.045em;
@@ -192,7 +193,9 @@ body {
   z-index: 10;
   isolation: isolate;
   /* Must match footer height so the chair can scroll off and reveal it */
-  padding-bottom: var(--footer-reveal-height);
+  padding-bottom: calc(
+    var(--footer-reveal-height) + env(safe-area-inset-bottom, 0px)
+  );
 }
 
 .home-chair-reveal {
@@ -211,9 +214,12 @@ body {
   bottom: 0;
   z-index: 0;
   display: flex;
-  height: var(--footer-reveal-height);
+  height: calc(
+    var(--footer-reveal-height) + env(safe-area-inset-bottom, 0px)
+  );
   flex-direction: column;
   justify-content: flex-end;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .home-footer-fixed .footer-display-clip {
@@ -221,12 +227,32 @@ body {
 }
 
 .home-footer-fixed .footer-utility {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+}
+
+@media (max-width: 639px) {
+  .footer-display-clip {
+    --footer-display-size: clamp(3.5rem, 16vw, 5rem);
+  }
+
+  .home-footer-fixed .footer-utility {
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .home-footer-fixed .footer-utility > div:first-child {
+    gap: 1.5rem;
+  }
+
+  .home-footer-fixed .footer-utility > div:last-child {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
 }
 
 /* Perspective deck — sticky slots, 3D transforms on inner deck */
@@ -253,10 +279,6 @@ body {
   margin-bottom: 0.75rem;
   background: var(--background);
   padding-bottom: 0.75rem;
-}
-
-.stack-section-intro[data-phase="hidden"] {
-  visibility: hidden;
 }
 
 .stack-card {
