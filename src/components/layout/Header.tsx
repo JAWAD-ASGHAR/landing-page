@@ -30,12 +30,25 @@ function HeaderContent({
       <div className="container-main grid h-[4.5rem] grid-cols-[1fr_auto_1fr] items-center">
         <Link
           href="/"
-          className={cn(
-            "heading-display text-[0.95rem] font-semibold tracking-tight",
-            light ? "text-white" : "text-foreground",
-          )}
+          className={cn("site-logo shrink-0", light && "site-logo--light")}
+          aria-label={site.name}
         >
-          {site.name}
+          <span
+            className={cn(
+              "site-logo-mark",
+              light ? "text-white" : "text-foreground",
+            )}
+          >
+            {site.logoMark}
+          </span>
+          <span
+            className={cn(
+              "site-logo-suffix hidden min-[420px]:inline",
+              light ? "text-white/55" : "text-muted-foreground",
+            )}
+          >
+            {site.logoSuffix}
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Main">

@@ -1,5 +1,7 @@
 export const site = {
   name: "Practice Pro Solutions",
+  logoMark: "Practice Pro",
+  logoSuffix: "Solutions",
   domain: "practiceprosolutions.com.au",
   tagline: "Your trusted partner in supporting general practices across Australia",
   phone: "+61 2 0000 0000",

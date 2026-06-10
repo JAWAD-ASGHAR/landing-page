@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-import { HERO_VIDEOS, HERO_POSTER } from "@/lib/hero-videos";
+import { HERO_VIDEOS } from "@/lib/hero-videos";
 const CROSSFADE_MS = 9000;
 const FADE_DURATION_MS = 1800;
 
@@ -41,11 +41,14 @@ export function HeroVideo({ className }: HeroVideoProps) {
 
   if (reducedMotion) {
     return (
-      <div className={cn("absolute inset-0", className)}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HERO_POSTER}
-          alt=""
+      <div className={cn("absolute inset-0 bg-[#111111]", className)} aria-hidden>
+        <video
+          src={HERO_VIDEOS[0]}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
           className="h-full w-full object-cover"
         />
       </div>
@@ -53,7 +56,7 @@ export function HeroVideo({ className }: HeroVideoProps) {
   }
 
   return (
-    <div className={cn("absolute inset-0", className)} aria-hidden>
+    <div className={cn("absolute inset-0 bg-[#111111]", className)} aria-hidden>
       {HERO_VIDEOS.map((src, index) => (
         <video
           key={src}
@@ -61,7 +64,6 @@ export function HeroVideo({ className }: HeroVideoProps) {
             videoRefs.current[index] = element;
           }}
           src={src}
-          poster={HERO_POSTER}
           autoPlay={index === 0}
           muted
           loop
