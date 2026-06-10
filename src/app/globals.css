@@ -13,10 +13,12 @@
   --cta-soft: #e8eef6;
   --section-padding: clamp(5rem, 10vw, 8rem);
   --container-max: 80rem;
-  --stack-sticky-base: 5.5rem;
-  --stack-sticky-step: 1.25rem;
-  --stack-card-height: 85vh;
-  --stack-card-gap: 6rem;
+  --stack-sticky-base: 4.5rem;
+  --stack-sticky-step: 0.875rem;
+  --stack-card-height: 68vh;
+  --stack-card-max-height: 680px;
+  --stack-card-gap: 11rem;
+  --stack-card-width: min(calc(100% - 1.5rem), 80rem);
 }
 
 @theme inline {
@@ -118,32 +120,52 @@ body {
   font-style: italic;
 }
 
-/* Stacked sticky cards — each card pins and the next covers it */
+/* Perspective deck — sticky slots, 3D transforms on inner deck */
 .stack-section {
   overflow: visible;
-  padding-bottom: 100vh;
+  padding-bottom: 50vh;
+}
+
+.stack-perspective {
+  perspective: 1500px;
+  perspective-origin: 50% 0%;
 }
 
 .stack-card {
   position: sticky;
-  height: var(--stack-card-height);
+  width: var(--stack-card-width);
+  height: min(var(--stack-card-height), var(--stack-card-max-height));
+  margin-inline: auto;
   margin-bottom: var(--stack-card-gap);
-  overflow: hidden;
-  border-radius: 2.5rem;
-  transform-origin: top center;
-  isolation: isolate;
+  pointer-events: none;
 }
 
 .stack-card:last-child {
   margin-bottom: 0;
 }
 
+.stack-card-deck {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 2.5rem;
+  transform-style: preserve-3d;
+  transform-origin: 50% 0%;
+  will-change: transform, filter;
+  pointer-events: auto;
+}
+
+.stack-card-deck--front {
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.14),
+    0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
 .stack-card-shell {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  transform-origin: top center;
-  will-change: filter;
 }
 
 .stack-card-shell::after {
@@ -159,6 +181,7 @@ body {
   position: relative;
   z-index: 1;
   height: 100%;
+  width: 100%;
 }
 
 @keyframes hero-logo-marquee {

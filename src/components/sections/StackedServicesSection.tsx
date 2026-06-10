@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { ArrowRight, Asterisk } from "lucide-react";
 import gsap from "gsap";
@@ -8,10 +9,16 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { services } from "@/lib/content";
-import { cn } from "@/lib/utils";
 
-const STICKY_BASE = 88;
-const STICKY_STEP = 20;
+const STICKY_BASE = 72;
+const STICKY_STEP = 14;
+const SCALE_STEP = 0.03;
+const Z_STEP = 48;
+const BRIGHTNESS_STEP = 0.09;
+
+function stickyTop(index: number) {
+  return STICKY_BASE + index * STICKY_STEP;
+}
 
 function serviceTags(shortTitle: string) {
   return shortTitle
@@ -20,49 +27,95 @@ function serviceTags(shortTitle: string) {
     .filter(Boolean);
 }
 
+/** Which card is currently in focus (sticky at its pin point). */
+function getActiveCardIndex(cards: HTMLElement[]) {
+  let active = 0;
+  for (let i = 0; i < cards.length; i++) {
+    const top = cards[i].getBoundingClientRect().top;
+    if (top <= stickyTop(i) + 4) active = i;
+  }
+  return active;
+}
+
+function deckTransform(depth: number) {
+  if (depth < 0) {
+    const approach = Math.min(1, Math.abs(depth));
+    return {
+      scale: 0.96 + approach * 0.04,
+      z: -30 + approach * 30,
+      brightness: 0.88 + approach * 0.12,
+    };
+  }
+  if (depth === 0) {
+    return { scale: 1, z: 0, brightness: 1 };
+  }
+  return {
+    scale: Math.max(0.82, 1 - depth * SCALE_STEP),
+    z: -depth * Z_STEP,
+    brightness: Math.max(0.62, 1 - depth * BRIGHTNESS_STEP),
+  };
+}
+
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
   const stackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !stackRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const cards = stackRef.current?.querySelectorAll<HTMLElement>("[data-stack-card]");
-    if (!cards?.length) return;
+    const cards = Array.from(
+      stackRef.current.querySelectorAll<HTMLElement>("[data-stack-card]"),
+    );
+    const decks = cards.map(
+      (card) => card.querySelector<HTMLElement>("[data-stack-deck]")!,
+    );
 
-    const triggers: ScrollTrigger[] = [];
-
-    cards.forEach((card, index) => {
-      const shell = card.querySelector<HTMLElement>("[data-stack-shell]");
-      const nextCard = cards[index + 1];
-      if (!shell || !nextCard) return;
-
-      const nextStickyTop = STICKY_BASE + (index + 1) * STICKY_STEP;
-
-      const tween = gsap.fromTo(
-        shell,
-        { filter: "brightness(1)" },
-        {
-          filter: "brightness(0.82)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: nextCard,
-            start: "top bottom",
-            end: `top top+=${nextStickyTop}`,
-            scrub: 0.45,
-          },
-        },
-      );
-
-      if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+    decks.forEach((deck) => {
+      gsap.set(deck, {
+        transformPerspective: 1500,
+        force3D: true,
+        transformOrigin: "50% 0%",
+      });
     });
 
+    const setters = decks.map((deck) => ({
+      scale: gsap.quickSetter(deck, "scale"),
+      z: gsap.quickSetter(deck, "z"),
+      filter: gsap.quickSetter(deck, "filter"),
+    }));
+
+    const updateDeck = () => {
+      const active = getActiveCardIndex(cards);
+
+      cards.forEach((card, index) => {
+        const depth = active - index;
+        const { scale, z, brightness } = deckTransform(depth);
+
+        setters[index].scale(scale);
+        setters[index].z(z);
+        setters[index].filter(`brightness(${brightness})`);
+
+        decks[index].classList.toggle("stack-card-deck--front", depth === 0);
+        card.style.pointerEvents = depth === 0 ? "auto" : "none";
+      });
+    };
+
+    const trigger = ScrollTrigger.create({
+      trigger: stackRef.current,
+      start: "top bottom",
+      end: "bottom top",
+      onUpdate: updateDeck,
+    });
+
+    updateDeck();
+    ScrollTrigger.addEventListener("refreshInit", updateDeck);
     ScrollTrigger.refresh();
 
     return () => {
-      triggers.forEach((trigger) => trigger.kill());
+      trigger.kill();
+      ScrollTrigger.removeEventListener("refreshInit", updateDeck);
     };
   }, [reducedMotion]);
 
@@ -92,38 +145,52 @@ export function StackedServicesSection() {
             {services.map((service) => (
               <article
                 key={service.id}
-                className="overflow-hidden rounded-[2rem]"
-                style={{ backgroundColor: service.stackColor }}
+                className="mx-auto overflow-hidden rounded-[2rem]"
+                style={{
+                  backgroundColor: service.stackColor,
+                  width: "var(--stack-card-width)",
+                }}
               >
-                <div className="grid min-h-[24rem] gap-8 p-8 sm:p-12 lg:grid-cols-[1fr_min(36%,20rem)]">
+                <div className="grid min-h-[20rem] gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_min(36%,14rem)]">
                   <StackedServiceContent service={service} />
-                  <StackServiceImage label={service.stackImageLabel} />
+                  <StackServiceImage
+                    src={service.stackImage}
+                    alt={service.stackImageLabel}
+                  />
                 </div>
               </article>
             ))}
           </div>
         ) : (
-          <div ref={stackRef} className="overflow-visible pb-8">
+          <div ref={stackRef} className="stack-perspective overflow-visible pb-8">
             {services.map((service, index) => (
               <article
                 key={service.id}
                 data-stack-card
-                className={cn("stack-card mx-auto w-full max-w-[80rem]")}
+                className="stack-card"
                 style={{
-                  top: STICKY_BASE + index * STICKY_STEP,
+                  top: stickyTop(index),
                   zIndex: index + 1,
                 }}
                 aria-label={`${service.title} service`}
               >
                 <div
-                  data-stack-shell
-                  className="stack-card-shell"
-                  style={{ backgroundColor: service.stackColor }}
-                  aria-hidden
-                />
-                <div className="stack-card-content grid h-full gap-8 px-8 py-10 sm:px-12 sm:py-12 lg:grid-cols-[1fr_min(36%,22rem)] lg:px-14 lg:py-12">
-                  <StackedServiceContent service={service} />
-                  <StackServiceImage label={service.stackImageLabel} />
+                  data-stack-deck
+                  className="stack-card-deck"
+                  style={{ transformOrigin: "50% 0%" }}
+                >
+                  <div
+                    className="stack-card-shell"
+                    style={{ backgroundColor: service.stackColor }}
+                    aria-hidden
+                  />
+                  <div className="stack-card-content grid h-full gap-6 px-6 py-8 sm:px-10 sm:py-9 lg:grid-cols-[1fr_min(38%,15rem)] lg:px-12 lg:py-10">
+                    <StackedServiceContent service={service} />
+                    <StackServiceImage
+                    src={service.stackImage}
+                    alt={service.stackImageLabel}
+                  />
+                  </div>
                 </div>
               </article>
             ))}
@@ -134,14 +201,16 @@ export function StackedServicesSection() {
   );
 }
 
-function StackServiceImage({ label }: { label: string }) {
+function StackServiceImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <div
-      className="placeholder-skeleton min-h-[12rem] rounded-2xl border-white/10 lg:min-h-0 lg:self-stretch"
-      role="img"
-      aria-label={label}
-    >
-      [Image Placeholder: {label}]
+    <div className="relative min-h-[9rem] overflow-hidden rounded-xl border border-white/10 lg:min-h-0 lg:self-stretch">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover"
+        sizes="(min-width: 1024px) 15rem, 40vw"
+      />
     </div>
   );
 }
@@ -155,35 +224,35 @@ function StackedServiceContent({
 
   return (
     <div className="flex min-h-0 flex-col justify-between">
-      <div className="flex items-start justify-between gap-6">
-        <h3 className="heading-display max-w-4xl text-[clamp(2rem,5vw,3.75rem)] font-semibold leading-[1.02] text-white">
+      <div className="flex items-start justify-between gap-4">
+        <h3 className="heading-display text-[clamp(1.625rem,3.2vw,2.625rem)] font-semibold leading-[1.05] text-white">
           {service.title}
         </h3>
         {service.comingSoon && (
-          <span className="shrink-0 rounded-full border border-white/20 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wider text-white/55">
+          <span className="shrink-0 rounded-full border border-white/20 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-wider text-white/55">
             Coming Soon
           </span>
         )}
       </div>
 
-      <div className="mt-auto pt-10 lg:pt-16">
-        <ul className="mb-6 flex flex-wrap gap-x-5 gap-y-2">
+      <div className="mt-auto pt-6 lg:pt-8">
+        <ul className="mb-4 flex flex-wrap gap-x-4 gap-y-1.5">
           {tags.map((tag) => (
             <li
               key={tag}
-              className="text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-white/45"
+              className="text-[0.625rem] font-medium uppercase tracking-[0.14em] text-white/45"
             >
               {tag}
             </li>
           ))}
         </ul>
 
-        <div className="flex flex-col gap-6">
-          <p className="flex max-w-2xl gap-3 text-sm leading-relaxed text-white/72 sm:text-base">
+        <div className="flex flex-col gap-4">
+          <p className="flex gap-2.5 text-sm leading-relaxed text-white/72">
             <Asterisk
-              size={14}
+              size={13}
               strokeWidth={1.5}
-              className="mt-1 shrink-0 text-white/35"
+              className="mt-0.5 shrink-0 text-white/35"
               aria-hidden
             />
             <span>{service.description}</span>

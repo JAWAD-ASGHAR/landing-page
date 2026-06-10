@@ -33,6 +33,7 @@ export const services = [
     featured: true,
     comingSoon: false,
     stackColor: "#4a4844",
+    stackImage: "/services/Practice Media.jpg",
     stackImageLabel: "GP clinic website and digital marketing visual",
     details: {
       intro:
@@ -61,6 +62,7 @@ export const services = [
     featured: false,
     comingSoon: false,
     stackColor: "#3d4548",
+    stackImage: "/services/Virtual Receptionists.jpg",
     stackImageLabel: "Virtual receptionist with headset at medical desk",
     details: {
       intro:
@@ -89,6 +91,7 @@ export const services = [
     featured: false,
     comingSoon: false,
     stackColor: "#503a3a",
+    stackImage: "/services/Sale & Purchase GP .jpg",
     stackImageLabel: "Australian GP practice exterior or sale consultation",
     details: {
       intro:
@@ -117,6 +120,7 @@ export const services = [
     featured: false,
     comingSoon: false,
     stackColor: "#424538",
+    stackImage: "/services/E-commerce Medical Consumables .jpg",
     stackImageLabel: "Medical consumables and supplies for GP clinics",
     details: {
       intro:
@@ -144,6 +148,7 @@ export const services = [
     featured: false,
     comingSoon: true,
     stackColor: "#3f3a48",
+    stackImage: "/services/Virtual Practice Management .jpg",
     stackImageLabel: "Practice management dashboard and admin workflow",
     details: {
       intro:
@@ -171,6 +176,7 @@ export const services = [
     featured: false,
     comingSoon: true,
     stackColor: "#3a4240",
+    stackImage: "/services/Accounting & Bookkeeping .jpg",
     stackImageLabel: "Healthcare bookkeeping and financial reporting",
     details: {
       intro:
