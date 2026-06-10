@@ -1,4 +1,5 @@
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { DarkFeaturesSection } from "@/components/sections/DarkFeaturesSection";
 import { FAQAccordion } from "@/components/sections/FAQAccordion";
 import {
@@ -9,11 +10,12 @@ import { ImpactSection } from "@/components/sections/ImpactSection";
 import { StackedServicesSection } from "@/components/sections/StackedServicesSection";
 import { ChairCTASection } from "@/components/sections/ChairCTASection";
 import { HomeChairReveal } from "@/components/sections/HomeChairReveal";
-import { faqs } from "@/lib/content";
+import { faqPageJsonLd, homeFaqs } from "@/lib/seo";
 
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={faqPageJsonLd(homeFaqs)} />
       <HeroSection />
 
       <HomeIntroSection />
@@ -24,16 +26,22 @@ export default function HomePage() {
 
       <DarkFeaturesSection />
 
-      {/* FAQ */}
-      <section className="section-padding bg-white">
+      <section
+        id="faq"
+        aria-labelledby="home-faq-heading"
+        className="section-padding bg-white"
+      >
         <div className="container-main">
           <ScrollReveal>
-            <h2 className="heading-display mb-12 text-center text-3xl font-semibold sm:text-4xl">
+            <h2
+              id="home-faq-heading"
+              className="heading-display mb-12 text-center text-3xl font-semibold sm:text-4xl"
+            >
               Frequently Asked Questions
             </h2>
           </ScrollReveal>
           <div className="mx-auto max-w-3xl">
-            <FAQAccordion faqs={faqs.slice(0, 4)} />
+            <FAQAccordion faqs={homeFaqs} />
           </div>
         </div>
       </section>

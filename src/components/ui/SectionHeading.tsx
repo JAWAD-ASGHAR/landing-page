@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 type SectionHeadingProps = {
   eyebrow?: string;
   title: string;
+  titleId?: string;
   description?: string;
   align?: "left" | "center";
   className?: string;
@@ -11,6 +12,7 @@ type SectionHeadingProps = {
 export function SectionHeading({
   eyebrow,
   title,
+  titleId,
   description,
   align = "left",
   className,
@@ -24,7 +26,10 @@ export function SectionHeading({
       )}
     >
       {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
-      <h2 className="heading-display text-3xl font-semibold text-foreground sm:text-4xl lg:text-[2.75rem]">
+      <h2
+        id={titleId}
+        className="heading-display text-3xl font-semibold text-foreground sm:text-4xl lg:text-[2.75rem]"
+      >
         {title}
       </h2>
       {description && (

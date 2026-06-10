@@ -1,9 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { SiteLoader } from "@/components/motion/SiteLoader";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
-import { site } from "@/lib/content";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  organizationJsonLd,
+  rootMetadata,
+  webSiteJsonLd,
+} from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -20,18 +25,18 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: `${site.name} | Supporting General Practices Across Australia`,
-    template: `%s | ${site.name}`,
-  },
-  description:
-    "Practice Pro Solutions helps Australian GPs and clinics run smoother — from virtual reception and practice management to bookkeeping, media, supplies, and GP practice sales.",
-  metadataBase: new URL(`https://${site.domain}`),
+  ...rootMetadata,
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -48,6 +53,7 @@ export default function RootLayout({
         className="min-h-full flex flex-col font-sans text-foreground"
         suppressHydrationWarning
       >
+        <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} />
         <SiteLoader>
           <SmoothScroll>
             <SiteShell>{children}</SiteShell>

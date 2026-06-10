@@ -1,20 +1,30 @@
-import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { site, trustSignals } from "@/lib/content";
+import { breadcrumbJsonLd, createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+const contactDescription =
+  "Book a free consultation with Practice Pro Solutions. Contact us to explore virtual reception, practice management, bookkeeping, media, and medical supplies.";
+
+export const metadata = createPageMetadata({
   title: "Contact Us",
-  description:
-    "Book a free consultation with Practice Pro Solutions. Contact us to explore virtual reception, practice management, bookkeeping, media, and medical supplies.",
-};
+  description: contactDescription,
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Contact Us", path: "/contact" },
+        ])}
+      />
       <section className="section-padding bg-white">
         <div className="container-main">
           <ScrollReveal>

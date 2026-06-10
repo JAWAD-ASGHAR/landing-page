@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQAccordion } from "@/components/sections/FAQAccordion";
 import { HowItWorks } from "@/components/sections/HowItWorks";
@@ -13,16 +13,35 @@ import {
   founder,
   testimonials,
 } from "@/lib/content";
+import {
+  breadcrumbJsonLd,
+  createPageMetadata,
+  faqPageJsonLd,
+} from "@/lib/seo";
 
-export const metadata: Metadata = {
+const aboutDescription =
+  "Learn about Practice Pro Solutions — supporting Australian healthcare since 2003. Meet founder Dr. Faisal Khan, MBBS, FRACGP, FAMAC.";
+
+const aboutFaqs = faqs.slice(5);
+
+export const metadata = createPageMetadata({
   title: "About Us",
-  description:
-    "Learn about Practice Pro Solutions — supporting Australian healthcare since 2003. Meet founder Dr. Faisal Khan, MBBS, FRACGP, FAMAC.",
-};
+  description: aboutDescription,
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "About Us", path: "/about" },
+          ]),
+          faqPageJsonLd(aboutFaqs),
+        ]}
+      />
       <section className="section-padding bg-white">
         <div className="container-main">
           <ScrollReveal>
@@ -149,16 +168,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-padding">
+      <section
+        id="faq"
+        aria-labelledby="about-faq-heading"
+        className="section-padding"
+      >
         <div className="container-main">
           <SectionHeading
             eyebrow="FAQ"
             title="Frequently Asked Questions"
             align="center"
             className="mx-auto mb-12"
+            titleId="about-faq-heading"
           />
           <div className="mx-auto max-w-3xl">
-            <FAQAccordion faqs={faqs.slice(5)} />
+            <FAQAccordion faqs={aboutFaqs} />
           </div>
         </div>
       </section>

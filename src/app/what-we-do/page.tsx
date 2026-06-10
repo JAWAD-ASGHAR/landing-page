@@ -1,22 +1,39 @@
-import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ParallaxImage } from "@/components/motion/ParallaxImage";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { CTASection } from "@/components/sections/CTASection";
 import { ServiceDetailSection } from "@/components/sections/ServiceDetailSection";
 import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
 import { services, testimonials } from "@/lib/content";
+import {
+  breadcrumbJsonLd,
+  createPageMetadata,
+  servicesItemListJsonLd,
+} from "@/lib/seo";
 
-export const metadata: Metadata = {
+const whatWeDoDescription =
+  "Explore Practice Pro Solutions services — Practice Media, Virtual Receptionists, GP Sale & Purchase, Medical Consumables, Virtual Practice Management, and Accounting & Bookkeeping.";
+
+export const metadata = createPageMetadata({
   title: "What We Do",
-  description:
-    "Explore Practice Pro Solutions services — Practice Media, Virtual Receptionists, GP Sale & Purchase, Medical Consumables, Virtual Practice Management, and Accounting & Bookkeeping.",
-};
+  description: whatWeDoDescription,
+  path: "/what-we-do",
+});
 
 export default function WhatWeDoPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "What We Do", path: "/what-we-do" },
+          ]),
+          servicesItemListJsonLd(),
+        ]}
+      />
       <section className="section-padding overflow-hidden bg-white">
         <div className="container-main">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
@@ -35,6 +52,8 @@ export default function WhatWeDoPage() {
               </div>
             </ScrollReveal>
             <ParallaxImage
+              src="/Connected Care.jpg"
+              alt="Australian medical practice team collaborating on patient care"
               label="Australian medical practice team at work"
               className="aspect-[4/3] min-h-[20rem]"
             />

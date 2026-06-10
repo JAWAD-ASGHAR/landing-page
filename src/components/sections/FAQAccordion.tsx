@@ -22,8 +22,10 @@ export function FAQAccordion({ faqs }: { faqs: readonly FAQ[] }) {
             <div className="border-b border-border">
               <button
                 type="button"
+                id={`faq-question-${index}`}
                 className="flex w-full items-center justify-between gap-6 py-6 text-left transition-colors hover:text-accent-blue"
                 aria-expanded={isOpen}
+                aria-controls={`faq-answer-${index}`}
                 onClick={() => setOpenIndex(isOpen ? null : index)}
               >
                 <span className="heading-display text-base font-medium sm:text-lg">
@@ -38,6 +40,9 @@ export function FAQAccordion({ faqs }: { faqs: readonly FAQ[] }) {
                 />
               </button>
               <div
+                id={`faq-answer-${index}`}
+                role="region"
+                aria-labelledby={`faq-question-${index}`}
                 className={cn(
                   "grid transition-all duration-300 ease-out",
                   isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
