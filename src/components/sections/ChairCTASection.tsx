@@ -68,7 +68,7 @@ export function ChairCTASection() {
           }
         >
           <Image
-            src="/chairarm.avif"
+            src="/home/chairarm.avif"
             alt=""
             width={900}
             height={700}

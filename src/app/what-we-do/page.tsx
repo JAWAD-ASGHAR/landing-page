@@ -52,7 +52,7 @@ export default function WhatWeDoPage() {
               </div>
             </ScrollReveal>
             <ParallaxImage
-              src="/Connected Care.jpg"
+              src="/home/Connected Care.jpg"
               alt="Australian medical practice team collaborating on patient care"
               label="Australian medical practice team at work"
               className="aspect-[4/3] min-h-[20rem]"

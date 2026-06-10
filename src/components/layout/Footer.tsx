@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useReducedMotion } from "framer-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
-import { navLinks, site } from "@/lib/content";
+import { legalFooterLinks, navLinks, site } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 function FooterUtility({ compact }: { compact?: boolean }) {
@@ -49,13 +49,12 @@ function FooterUtility({ compact }: { compact?: boolean }) {
         <p>
           © {new Date().getFullYear()} {site.name}. All rights reserved.
         </p>
-        <div className="flex gap-6">
-          <Link href="/contact" className="hover:text-foreground">
-            Privacy Policy
-          </Link>
-          <Link href="/contact" className="hover:text-foreground">
-            Terms of Service
-          </Link>
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
+          {legalFooterLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-foreground">
+              {link.label}
+            </Link>
+          ))}
         </div>
       </div>
     </div>

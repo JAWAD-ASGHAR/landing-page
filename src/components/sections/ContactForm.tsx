@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 export function ContactForm() {
@@ -14,82 +15,89 @@ export function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-md border border-accent-blue/30 bg-accent-blue-light p-8 text-center">
-        <p className="heading-display text-xl font-semibold text-foreground">
-          Thank you for your enquiry
-        </p>
-        <p className="mt-3 text-muted-foreground">
-          Our team will contact you to confirm details and schedule your free
-          consultation at a time that suits you.
-        </p>
-      </div>
+      <ScrollReveal>
+        <div className="rounded-3xl bg-white p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.08)] sm:p-10">
+          <p className="eyebrow mb-4">Enquiry received</p>
+          <p className="heading-display text-2xl font-semibold text-foreground sm:text-3xl">
+            Thank you for reaching out
+          </p>
+          <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
+            Our team will contact you within one business day to confirm details
+            and schedule your free consultation.
+          </p>
+        </div>
+      </ScrollReveal>
     );
   }
+
+  const fieldClassName =
+    "w-full rounded-2xl border border-border/80 bg-white px-4 py-3.5 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/15";
 
   return (
     <ScrollReveal>
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl border border-border bg-white p-8 shadow-sm"
+        className="rounded-3xl bg-white p-7 shadow-[0_24px_60px_rgba(0,0,0,0.08)] sm:p-8"
       >
         <div className="grid gap-5 sm:grid-cols-2">
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-foreground">
+            <span className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
               Full name
             </span>
             <input
               required
               type="text"
               name="name"
-              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              autoComplete="name"
+              className={fieldClassName}
               placeholder="Dr. Jane Smith"
             />
           </label>
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-foreground">
+            <span className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
               Practice name
             </span>
             <input
               required
               type="text"
               name="practice"
-              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              autoComplete="organization"
+              className={fieldClassName}
               placeholder="Your GP clinic"
             />
           </label>
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-foreground">
+            <span className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
               Email
             </span>
             <input
               required
               type="email"
               name="email"
-              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              autoComplete="email"
+              className={fieldClassName}
               placeholder="you@practice.com.au"
             />
           </label>
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-foreground">
+            <span className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
               Phone
             </span>
             <input
               type="tel"
               name="phone"
-              className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              autoComplete="tel"
+              className={fieldClassName}
               placeholder="+61 ..."
             />
           </label>
         </div>
 
         <label className="mt-5 block">
-          <span className="mb-2 block text-sm font-medium text-foreground">
+          <span className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
             How can we help?
           </span>
-          <select
-            name="service"
-            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
-          >
+          <select name="service" className={fieldClassName}>
             <option>General enquiry</option>
             <option>Practice Media</option>
             <option>Virtual Receptionists</option>
@@ -101,20 +109,32 @@ export function ContactForm() {
         </label>
 
         <label className="mt-5 block">
-          <span className="mb-2 block text-sm font-medium text-foreground">
+          <span className="mb-2 block text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
             Message
           </span>
           <textarea
             name="message"
             rows={4}
-            className="w-full resize-y rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+            className={`${fieldClassName} resize-y`}
             placeholder="Tell us about your practice and what support you're looking for."
           />
         </label>
 
-        <Button type="submit" className="mt-6 w-full sm:w-auto">
-          Book a Free Consultation
-        </Button>
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            type="submit"
+            className="inline-flex items-center justify-center gap-2.5 rounded-full bg-dark px-7 py-4 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-dark-muted"
+          >
+            Book a free consultation
+            <ArrowRight size={15} strokeWidth={2.25} aria-hidden />
+          </button>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            See our{" "}
+            <Link href="/privacy" className="text-accent-blue hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
+        </div>
       </form>
     </ScrollReveal>
   );

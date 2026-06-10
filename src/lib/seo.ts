@@ -8,7 +8,7 @@ export const siteUrl = new URL(
 export const defaultDescription =
   "Practice Pro Solutions helps Australian GPs and clinics run smoother — from virtual reception and practice management to bookkeeping, media, supplies, and GP practice sales.";
 
-export const defaultOgImage = "/Strong%20Foundations.jpg";
+export const defaultOgImage = "/home/Strong Foundations.jpg";
 
 export const seoKeywords = [
   "general practice support Australia",
@@ -239,13 +239,25 @@ export function servicesItemListJsonLd() {
   };
 }
 
-export const sitemapRoutes = navLinks.map((link) => ({
-  path: link.href,
-  changeFrequency:
-    link.href === "/"
-      ? ("weekly" as const)
-      : ("monthly" as const),
-  priority: link.href === "/" ? 1 : 0.8,
-}));
+export const sitemapRoutes = [
+  ...navLinks.map((link) => ({
+    path: link.href,
+    changeFrequency:
+      link.href === "/"
+        ? ("weekly" as const)
+        : ("monthly" as const),
+    priority: link.href === "/" ? 1 : 0.8,
+  })),
+  {
+    path: "/privacy",
+    changeFrequency: "yearly" as const,
+    priority: 0.3,
+  },
+  {
+    path: "/terms",
+    changeFrequency: "yearly" as const,
+    priority: 0.3,
+  },
+];
 
 export const homeFaqs = faqs.slice(0, 4);

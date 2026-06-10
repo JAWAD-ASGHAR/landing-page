@@ -213,7 +213,7 @@ export const whyChooseUs = [
     title: "Smarter Operations",
     description:
       "Virtual management and reception support that keeps your clinic running smoothly — so your team can focus on patients, not paperwork.",
-    image: "/Smarter Operations.jpg",
+    image: "/home/Smarter Operations.jpg",
     imageLabel: "Medical professional with headset at reception desk",
   },
   {
@@ -221,7 +221,7 @@ export const whyChooseUs = [
     title: "Strong Foundations",
     description:
       "Accounting, bookkeeping, and GP sales expertise that gives your practice financial clarity and confidence at every stage.",
-    image: "/Strong Foundations.jpg",
+    image: "/home/Strong Foundations.jpg",
     imageLabel: "Hands using tablet for practice financial management",
   },
   {
@@ -229,7 +229,7 @@ export const whyChooseUs = [
     title: "Connected Care",
     description:
       "Build your brand with practice media and digital solutions that keep patients informed, engaged, and connected to your clinic.",
-    image: "/Connected Care.jpg",
+    image: "/home/Connected Care.jpg",
     imageLabel: "Mobile app interface for patient communication",
   },
   {
@@ -370,4 +370,174 @@ export const trustSignals = [
   "Healthcare-specialist team",
   "GP-led expertise since 2003",
   "Trusted by practices nationwide",
+] as const;
+
+export const contactPage = {
+  eyebrow: "Contact Us",
+  title: "Let's talk about",
+  titleAccent: "your practice.",
+  description:
+    "Book a free consultation to explore how we can support your clinic. No pressure, no hidden costs — just a clear conversation about what your practice needs.",
+  highlights: [
+    { label: "Free consultation", value: "Always" },
+    { label: "Typical duration", value: "20–30 min" },
+    { label: "Coverage", value: "Australia-wide" },
+  ],
+  formTitle: "Book a free consultation",
+  formDescription:
+    "Tell us a little about your practice and we'll be in touch to confirm a time that suits you.",
+  processTitle: "What happens next",
+  processDescription:
+    "A simple, no-pressure path from enquiry to clarity — designed around how busy practices actually work.",
+  processSteps: [
+    {
+      step: "01",
+      title: "You reach out",
+      description:
+        "Share your practice details and what you're looking for — reception, media, bookkeeping, or something else.",
+    },
+    {
+      step: "02",
+      title: "We confirm a time",
+      description:
+        "Our team contacts you within one business day to schedule a phone or Zoom consultation at your convenience.",
+    },
+    {
+      step: "03",
+      title: "We explore solutions",
+      description:
+        "In 20–30 minutes, we learn about your clinic and outline practical ways Practice Pro Solutions can help.",
+    },
+  ],
+  responseQuote:
+    "Most practices tell us the consultation alone clarifies what support would actually make a difference.",
+} as const;
+
+export type LegalSection = {
+  id: string;
+  title: string;
+  paragraphs: readonly string[];
+  list?: readonly string[];
+};
+
+export const privacyPolicy = {
+  title: "Privacy Policy",
+  eyebrow: "Legal",
+  updated: "10 June 2026",
+  intro:
+    "Practice Pro Solutions respects your privacy and is committed to protecting personal information in line with the Australian Privacy Act 1988 and the Australian Privacy Principles (APPs).",
+  sections: [
+    {
+      id: "collection",
+      title: "Information we collect",
+      paragraphs: [
+        "We may collect personal information you provide when you contact us, book a consultation, use our services, or interact with our website — including your name, practice name, email address, phone number, and any message content you submit.",
+        "We may also collect limited technical information when you visit our website, such as browser type, device information, and pages viewed, to help us improve the site experience.",
+      ],
+    },
+    {
+      id: "use",
+      title: "How we use your information",
+      paragraphs: [
+        "We use personal information to respond to enquiries, deliver our services, manage client relationships, improve our website, and meet legal or regulatory obligations.",
+      ],
+      list: [
+        "Scheduling and conducting consultations",
+        "Providing practice support services you request",
+        "Communicating updates relevant to your enquiry or engagement",
+        "Maintaining the security and performance of our systems",
+      ],
+    },
+    {
+      id: "health",
+      title: "Healthcare and sensitive information",
+      paragraphs: [
+        "Where our services involve access to practice or patient-related information, we handle that data with heightened care and only as required to deliver the agreed service. We do not use patient information for unrelated marketing purposes.",
+        "We expect all information shared with us to be provided lawfully and with appropriate authority from your practice.",
+      ],
+    },
+    {
+      id: "disclosure",
+      title: "When we disclose information",
+      paragraphs: [
+        "We do not sell personal information. We may disclose information to trusted service providers who help us operate our business (such as hosting or email providers), regulators where required by law, or professional advisers bound by confidentiality obligations.",
+      ],
+    },
+    {
+      id: "security",
+      title: "Storage and security",
+      paragraphs: [
+        "We take reasonable steps to protect personal information from misuse, loss, unauthorised access, modification, or disclosure. No method of transmission over the internet is completely secure, but we review our safeguards regularly.",
+      ],
+    },
+    {
+      id: "rights",
+      title: "Your rights and enquiries",
+      paragraphs: [
+        "You may request access to, or correction of, personal information we hold about you, subject to applicable exceptions under Australian privacy law.",
+        "For privacy-related questions or requests, contact us at info@practiceprosolutions.com.au.",
+      ],
+    },
+  ] satisfies readonly LegalSection[],
+} as const;
+
+export const termsOfService = {
+  title: "Terms of Service",
+  eyebrow: "Legal",
+  updated: "10 June 2026",
+  intro:
+    "These terms govern your use of the Practice Pro Solutions website and any enquiry or consultation you request through it. By using this site, you agree to these terms.",
+  sections: [
+    {
+      id: "website",
+      title: "Use of this website",
+      paragraphs: [
+        "This website provides general information about Practice Pro Solutions and our services for Australian general practices. Content is for informational purposes and does not constitute medical, legal, or financial advice.",
+        "You agree to use the website lawfully and not to interfere with its operation or attempt unauthorised access to our systems.",
+      ],
+    },
+    {
+      id: "consultations",
+      title: "Consultations and enquiries",
+      paragraphs: [
+        "Consultations offered through this website are free and non-binding. They are intended to help you understand how our services may support your practice.",
+        "Submitting a contact form does not create a client relationship or service agreement until both parties agree to formal terms in writing.",
+      ],
+    },
+    {
+      id: "services",
+      title: "Professional services",
+      paragraphs: [
+        "Specific services — including virtual reception, practice management, bookkeeping, media, supplies, and GP practice transitions — are provided under separate agreements that define scope, fees, responsibilities, and data handling requirements.",
+      ],
+    },
+    {
+      id: "accuracy",
+      title: "Information accuracy",
+      paragraphs: [
+        "We aim to keep website content current and accurate, but we do not warrant that all information is complete or free from error. Service availability may change, and any timelines discussed in consultations are estimates unless confirmed in writing.",
+      ],
+    },
+    {
+      id: "liability",
+      title: "Limitation of liability",
+      paragraphs: [
+        "To the extent permitted by Australian law, Practice Pro Solutions is not liable for any loss arising from reliance on general website content or from temporary unavailability of the site.",
+        "Nothing in these terms excludes rights or remedies that cannot be excluded under applicable consumer protection laws.",
+      ],
+    },
+    {
+      id: "changes",
+      title: "Changes and contact",
+      paragraphs: [
+        "We may update these terms from time to time. Continued use of the website after changes are published constitutes acceptance of the updated terms.",
+        "Questions about these terms can be directed to info@practiceprosolutions.com.au.",
+      ],
+    },
+  ] satisfies readonly LegalSection[],
+} as const;
+
+export const legalFooterLinks = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
 ] as const;

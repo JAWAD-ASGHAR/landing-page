@@ -58,13 +58,14 @@ export function ParallaxImage({
             : "placeholder-skeleton absolute inset-0 min-h-full w-full",
         )}
       >
-        {src && alt ? (
+        {src ? (
           <Image
             src={src}
-            alt={alt}
+            alt={alt ?? ""}
             fill
             className={cn("object-cover", imageClassName)}
             sizes={sizes}
+            aria-hidden={!alt}
           />
         ) : (
           <span className="flex h-full w-full items-center justify-center text-center">

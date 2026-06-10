@@ -1,4 +1,8 @@
-export const HERO_VIDEOS = ["/hero1.mp4", "/hero2.mp4", "/hero3.mp4"] as const;
+export const HERO_VIDEOS = [
+  "/videos/hero1.mp4",
+  "/videos/hero2.mp4",
+  "/videos/hero3.mp4",
+] as const;
 
 export function preloadHeroVideos(timeoutMs = 18000): Promise<void> {
   const minimumDisplay = new Promise<void>((resolve) => {
