@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { services } from "@/lib/content";
+import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { useMounted } from "@/lib/use-mounted";
 
 const STICKY_BASE = 72;
@@ -61,7 +62,8 @@ type Service = (typeof services)[number];
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
-  const staticStack = mounted && reducedMotion;
+  const { useHeavyMotion } = useDeviceCapabilities();
+  const staticStack = !mounted || !useHeavyMotion || reducedMotion;
   const stackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
