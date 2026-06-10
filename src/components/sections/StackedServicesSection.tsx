@@ -9,7 +9,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { services } from "@/lib/content";
-import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { useMounted } from "@/lib/use-mounted";
 
 const STICKY_BASE = 72;
@@ -62,8 +61,7 @@ type Service = (typeof services)[number];
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
-  const { useHeavyMotion } = useDeviceCapabilities();
-  const staticStack = !mounted || !useHeavyMotion || reducedMotion;
+  const staticStack = !mounted || reducedMotion;
   const stackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -119,9 +117,19 @@ export function StackedServicesSection() {
     ScrollTrigger.addEventListener("refreshInit", updateDeck);
     ScrollTrigger.refresh();
 
+    const images = stackRef.current.querySelectorAll("img");
+    const refreshLayout = () => ScrollTrigger.refresh();
+    images.forEach((image) => {
+      if (!image.complete) {
+        image.addEventListener("load", refreshLayout, { once: true });
+      }
+    });
+    window.addEventListener("orientationchange", refreshLayout);
+
     return () => {
       trigger.kill();
       ScrollTrigger.removeEventListener("refreshInit", updateDeck);
+      window.removeEventListener("orientationchange", refreshLayout);
     };
   }, [staticStack]);
 
