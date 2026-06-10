@@ -124,13 +124,13 @@ export function StackedServicesSection() {
       });
     });
 
-    const isMobile = isMobileDevice();
+    const isMobileGsap = isMobileDevice();
 
     const setters = decks.map((deck) => ({
       scale: gsap.quickSetter(deck, "scale"),
       z: gsap.quickSetter(deck, "z"),
-      filter: isMobile ? null : gsap.quickSetter(deck, "filter"),
-      opacity: isMobile ? gsap.quickSetter(deck, "opacity") : null,
+      filter: isMobileGsap ? null : gsap.quickSetter(deck, "filter"),
+      opacity: isMobileGsap ? gsap.quickSetter(deck, "opacity") : null,
     }));
 
     let scrollIdleTimer: number | undefined;
@@ -153,7 +153,7 @@ export function StackedServicesSection() {
         setters[index].scale(scale);
         setters[index].z(z);
 
-        if (isMobile) {
+        if (isMobileGsap) {
           setters[index].opacity!(brightnessToOpacity(brightness));
         } else {
           setters[index].filter!(`brightness(${brightness})`);

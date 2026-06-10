@@ -6,7 +6,6 @@ import { site } from "@/lib/content";
 import { preloadHeroContent } from "@/lib/hero-videos";
 import { LoaderMark } from "@/components/motion/LoaderMark";
 import { SiteLoaderReadyContext } from "@/lib/site-loader-ready";
-import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 
 type Phase = "loading" | "exit" | "done";
 
@@ -23,7 +22,8 @@ function LoaderLogo() {
 
 export function SiteLoader({ children }: { children: React.ReactNode }) {
   const reducedMotion = useReducedMotion();
-  const { isMobile } = useDeviceCapabilities();
+  const isMobile =
+    typeof window !== "undefined" && window.innerWidth < 768;
   const [phase, setPhase] = useState<Phase>("loading");
 
   useEffect(() => {
