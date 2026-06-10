@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,7 +10,6 @@ import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { isMobileDevice } from "@/lib/device-capabilities";
 import { services } from "@/lib/content";
-import { useSiteLoaderReady } from "@/lib/site-loader-ready";
 import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { useMounted } from "@/lib/use-mounted";
 
@@ -19,8 +18,6 @@ const STICKY_STEP = 14;
 const SCALE_STEP = 0.03;
 const Z_STEP = 48;
 const BRIGHTNESS_STEP = 0.09;
-const MOBILE_VIDEO_DELAY_MS = 500;
-const MOBILE_GSAP_DELAY_MS = MOBILE_VIDEO_DELAY_MS * 2;
 
 function stickyTop(index: number) {
   return STICKY_BASE + index * STICKY_STEP;
@@ -77,31 +74,8 @@ type Service = (typeof services)[number];
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
-  const siteLoaderReady = useSiteLoaderReady();
-  const { isMobile } = useDeviceCapabilities();
-  const [gsapAllowed, setGsapAllowed] = useState(false);
-
-  useEffect(() => {
-    if (!isMobile) {
-      setGsapAllowed(true);
-      return;
-    }
-
-    if (!siteLoaderReady) {
-      setGsapAllowed(false);
-      return;
-    }
-
-    const timer = window.setTimeout(
-      () => setGsapAllowed(true),
-      MOBILE_GSAP_DELAY_MS,
-    );
-
-    return () => window.clearTimeout(timer);
-  }, [siteLoaderReady, isMobile]);
-
-  const staticStack =
-    !mounted || reducedMotion || (isMobile && !gsapAllowed);
+  const { useHeavyMotion } = useDeviceCapabilities();
+  const staticStack = !mounted || reducedMotion || !useHeavyMotion;
   const stackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
