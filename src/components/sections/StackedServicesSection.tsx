@@ -3,12 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { ArrowRight, Asterisk } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { services } from "@/lib/content";
+import { useMounted } from "@/lib/use-mounted";
 
 const STICKY_BASE = 72;
 const STICKY_STEP = 14;
@@ -27,7 +28,6 @@ function serviceTags(shortTitle: string) {
     .filter(Boolean);
 }
 
-/** Which card is currently in focus (sticky at its pin point). */
 function getActiveCardIndex(cards: HTMLElement[]) {
   let active = 0;
   for (let i = 0; i < cards.length; i++) {
@@ -56,12 +56,16 @@ function deckTransform(depth: number) {
   };
 }
 
+type Service = (typeof services)[number];
+
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
+  const mounted = useMounted();
+  const staticStack = mounted && reducedMotion;
   const stackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (reducedMotion || !stackRef.current) return;
+    if (staticStack || !stackRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -117,7 +121,7 @@ export function StackedServicesSection() {
       trigger.kill();
       ScrollTrigger.removeEventListener("refreshInit", updateDeck);
     };
-  }, [reducedMotion]);
+  }, [staticStack]);
 
   return (
     <section className="stack-section bg-white pt-8">
@@ -140,24 +144,18 @@ export function StackedServicesSection() {
           </ScrollReveal>
         </div>
 
-        {reducedMotion ? (
+        {staticStack ? (
           <div className="space-y-6 pb-24">
             {services.map((service) => (
               <article
                 key={service.id}
-                className="mx-auto overflow-hidden rounded-[2rem]"
+                className="mx-auto min-h-[min(var(--stack-card-height),var(--stack-card-max-height))] overflow-hidden rounded-[2rem]"
                 style={{
                   backgroundColor: service.stackColor,
                   width: "var(--stack-card-width)",
                 }}
               >
-                <div className="grid min-h-[20rem] gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_min(36%,14rem)]">
-                  <StackedServiceContent service={service} />
-                  <StackServiceImage
-                    src={service.stackImage}
-                    alt={service.stackImageLabel}
-                  />
-                </div>
+                <StackedServiceCardBody service={service} />
               </article>
             ))}
           </div>
@@ -184,13 +182,7 @@ export function StackedServicesSection() {
                     style={{ backgroundColor: service.stackColor }}
                     aria-hidden
                   />
-                  <div className="stack-card-content grid h-full gap-6 px-6 py-8 sm:px-10 sm:py-9 lg:grid-cols-[1fr_min(38%,15rem)] lg:px-12 lg:py-10">
-                    <StackedServiceContent service={service} />
-                    <StackServiceImage
-                    src={service.stackImage}
-                    alt={service.stackImageLabel}
-                  />
-                  </div>
+                  <StackedServiceCardBody service={service} />
                 </div>
               </article>
             ))}
@@ -201,71 +193,83 @@ export function StackedServicesSection() {
   );
 }
 
-function StackServiceImage({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div className="relative min-h-[9rem] overflow-hidden rounded-xl border border-white/10 lg:min-h-0 lg:self-stretch">
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className="object-cover"
-        sizes="(min-width: 1024px) 15rem, 40vw"
-      />
-    </div>
-  );
-}
-
-function StackedServiceContent({
-  service,
-}: {
-  service: (typeof services)[number];
-}) {
+function StackedServiceCardBody({ service }: { service: Service }) {
   const tags = serviceTags(service.shortTitle);
+  const highlights = service.details.benefits.slice(0, 2);
 
   return (
-    <div className="flex min-h-0 flex-col justify-between">
-      <div className="flex items-start justify-between gap-4">
-        <h3 className="heading-display text-[clamp(1.625rem,3.2vw,2.625rem)] font-semibold leading-[1.05] text-white">
-          {service.title}
-        </h3>
-        {service.comingSoon && (
-          <span className="shrink-0 rounded-full border border-white/20 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-wider text-white/55">
-            Coming Soon
-          </span>
-        )}
-      </div>
+    <div className="stack-card-content grid h-full grid-rows-[auto_14rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:grid-rows-1">
+      <div className="flex h-full flex-col justify-between px-6 py-7 sm:px-8 sm:py-8 lg:px-10 lg:py-9 xl:px-12">
+        <div className="flex flex-col gap-5 lg:gap-6">
+          <h3 className="heading-display text-[clamp(1.625rem,3.2vw,2.625rem)] font-semibold leading-[1.05] text-white">
+            {service.title}
+          </h3>
 
-      <div className="mt-auto pt-6 lg:pt-8">
-        <ul className="mb-4 flex flex-wrap gap-x-4 gap-y-1.5">
-          {tags.map((tag) => (
-            <li
-              key={tag}
-              className="text-[0.625rem] font-medium uppercase tracking-[0.14em] text-white/45"
-            >
-              {tag}
-            </li>
-          ))}
-        </ul>
+          {tags.length > 0 && (
+            <ul className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <li
+                  key={tag}
+                  className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[0.625rem] font-medium uppercase tracking-[0.12em] text-white/70"
+                >
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          )}
 
-        <div className="flex flex-col gap-4">
-          <p className="flex gap-2.5 text-sm leading-relaxed text-white/72">
-            <Asterisk
-              size={13}
-              strokeWidth={1.5}
-              className="mt-0.5 shrink-0 text-white/35"
-              aria-hidden
-            />
-            <span>{service.description}</span>
-          </p>
+          <div className="space-y-3">
+            <p className="max-w-md text-[0.9375rem] leading-relaxed text-white/80">
+              {service.description}
+            </p>
+            <p className="max-w-md text-sm leading-relaxed text-white/55">
+              {service.details.intro}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-5 lg:gap-6">
+          <ul className="space-y-2">
+            {highlights.map((item) => (
+              <li
+                key={item}
+                className="flex gap-2.5 text-sm leading-snug text-white/70"
+              >
+                <span
+                  className="mt-2 h-1 w-1 shrink-0 rounded-full bg-white/45"
+                  aria-hidden
+                />
+                {item}
+              </li>
+            ))}
+          </ul>
 
           <Link
             href={`/what-we-do#${service.id}`}
-            className="inline-flex w-fit items-center gap-2 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-white/85 transition-colors hover:text-white"
+            className="inline-flex w-fit items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#111111] transition-colors hover:bg-white/90"
           >
             Learn More
-            <ArrowRight size={12} />
+            <ArrowRight size={14} strokeWidth={2.5} />
           </Link>
         </div>
+      </div>
+
+      <div className="relative min-h-0 overflow-hidden lg:h-full">
+        <Image
+          src={service.stackImage}
+          alt={service.stackImageLabel}
+          fill
+          className="object-cover"
+          sizes="(min-width: 1024px) 42vw, 100vw"
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent lg:from-black/45 lg:via-transparent"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent lg:bg-gradient-to-l lg:from-black/20 lg:via-transparent lg:to-transparent"
+          aria-hidden
+        />
       </div>
     </div>
   );

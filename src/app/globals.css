@@ -65,6 +65,11 @@ body {
   padding-block: var(--section-padding);
 }
 
+.section-padding-follow-stack {
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+  padding-bottom: var(--section-padding);
+}
+
 .container-main {
   width: min(100% - 2.5rem, var(--container-max));
   margin-inline: auto;
@@ -123,7 +128,7 @@ body {
 /* Perspective deck — sticky slots, 3D transforms on inner deck */
 .stack-section {
   overflow: visible;
-  padding-bottom: 50vh;
+  padding-bottom: 16vh;
 }
 
 .stack-perspective {

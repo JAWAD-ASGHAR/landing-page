@@ -30,21 +30,21 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const reducedMotion = useReducedMotion();
 
-  if (reducedMotion) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       className={cn(className)}
-      initial={{ opacity: 0, ...offsets[direction] }}
+      initial={reducedMotion ? false : { opacity: 0, ...offsets[direction] }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once, margin: "-80px" }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      transition={
+        reducedMotion
+          ? { duration: 0 }
+          : {
+              duration,
+              delay,
+              ease: [0.22, 1, 0.36, 1],
+            }
+      }
     >
       {children}
     </motion.div>

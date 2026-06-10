@@ -91,7 +91,7 @@ export const services = [
     featured: false,
     comingSoon: false,
     stackColor: "#503a3a",
-    stackImage: "/services/Sale & Purchase GP .jpg",
+    stackImage: "/services/Sale & Purchase GP.jpg",
     stackImageLabel: "Australian GP practice exterior or sale consultation",
     details: {
       intro:
@@ -120,7 +120,7 @@ export const services = [
     featured: false,
     comingSoon: false,
     stackColor: "#424538",
-    stackImage: "/services/E-commerce Medical Consumables .jpg",
+    stackImage: "/services/E-commerce Medical Consumables.jpg",
     stackImageLabel: "Medical consumables and supplies for GP clinics",
     details: {
       intro:
@@ -148,7 +148,7 @@ export const services = [
     featured: false,
     comingSoon: true,
     stackColor: "#3f3a48",
-    stackImage: "/services/Virtual Practice Management .jpg",
+    stackImage: "/services/Virtual Practice Management.jpg",
     stackImageLabel: "Practice management dashboard and admin workflow",
     details: {
       intro:
@@ -176,7 +176,7 @@ export const services = [
     featured: false,
     comingSoon: true,
     stackColor: "#3a4240",
-    stackImage: "/services/Accounting & Bookkeeping .jpg",
+    stackImage: "/services/Accounting & Bookkeeping.jpg",
     stackImageLabel: "Healthcare bookkeeping and financial reporting",
     details: {
       intro:
@@ -203,6 +203,7 @@ export const whyChooseUs = [
     title: "Smarter Operations",
     description:
       "Virtual management and reception support that keeps your clinic running smoothly — so your team can focus on patients, not paperwork.",
+    image: "/Smarter Operations.jpg",
     imageLabel: "Medical professional with headset at reception desk",
   },
   {
@@ -210,6 +211,7 @@ export const whyChooseUs = [
     title: "Strong Foundations",
     description:
       "Accounting, bookkeeping, and GP sales expertise that gives your practice financial clarity and confidence at every stage.",
+    image: "/Strong Foundations.jpg",
     imageLabel: "Hands using tablet for practice financial management",
   },
   {
@@ -217,6 +219,7 @@ export const whyChooseUs = [
     title: "Connected Care",
     description:
       "Build your brand with practice media and digital solutions that keep patients informed, engaged, and connected to your clinic.",
+    image: "/Connected Care.jpg",
     imageLabel: "Mobile app interface for patient communication",
   },
   {

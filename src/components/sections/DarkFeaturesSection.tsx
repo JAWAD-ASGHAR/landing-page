@@ -1,9 +1,9 @@
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import Image from "next/image";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { whyChooseUs } from "@/lib/content";
 
 export function DarkFeaturesSection() {
-  const features = whyChooseUs.slice(0, 3);
+  const features = [whyChooseUs[0], whyChooseUs[1], whyChooseUs[2]];
 
   return (
     <section className="section-padding bg-dark text-white">
@@ -50,11 +50,15 @@ export function DarkFeaturesSection() {
                 </ScrollReveal>
 
                 <ScrollReveal direction={reversed ? "left" : "right"} delay={0.1}>
-                  <ImagePlaceholder
-                    label={feature.imageLabel}
-                    aspectRatio="aspect-[4/3]"
-                    className="rounded-none grayscale"
-                  />
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+                    <Image
+                      src={feature.image}
+                      alt={feature.imageLabel}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 45vw, 100vw"
+                    />
+                  </div>
                 </ScrollReveal>
               </div>
             );

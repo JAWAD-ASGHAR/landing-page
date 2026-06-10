@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { AnimatedCounter } from "@/components/motion/AnimatedCounter";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { impactQuote, stats } from "@/lib/content";
@@ -8,7 +9,7 @@ export function ImpactSection() {
   const primaryStats = stats.slice(0, 2);
 
   return (
-    <section className="section-padding bg-white">
+    <section className="section-padding-follow-stack bg-white">
       <div className="container-main">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <ScrollReveal>
@@ -38,8 +39,14 @@ export function ImpactSection() {
 
           <ScrollReveal direction="right" delay={0.1}>
             <div className="relative">
-              <div className="placeholder-skeleton aspect-[4/5] min-h-[28rem] rounded-none">
-                [Image Placeholder: Professional at computer in medical practice]
+              <div className="relative aspect-[4/5] min-h-[28rem] overflow-hidden">
+                <Image
+                  src="/Practice Growth.jpg"
+                  alt="Healthcare professional preparing for patient care"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                />
               </div>
               <div className="absolute bottom-0 left-0 max-w-[16rem] bg-dark p-6 sm:max-w-xs sm:p-8">
                 <p className="quote-serif text-lg leading-snug text-white sm:text-xl">

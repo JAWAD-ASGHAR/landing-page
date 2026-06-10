@@ -39,7 +39,10 @@ export default function RootLayout({
       lang="en-AU"
       className={`${inter.variable} ${sourceSerif.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans text-foreground">
+      <body
+        className="min-h-full flex flex-col font-sans text-foreground"
+        suppressHydrationWarning
+      >
         <SiteLoader>
           <SmoothScroll>
             <SiteShell>{children}</SiteShell>
