@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import {
   getDeviceCapabilities,
   type DeviceCapabilities,
@@ -13,18 +13,23 @@ const SERVER_CAPABILITIES: DeviceCapabilities = {
   useHeavyMotion: true,
 };
 
-function subscribe() {
-  return () => {};
-}
-
-function getClientCapabilities() {
-  return getDeviceCapabilities();
-}
-
 export function useDeviceCapabilities() {
-  return useSyncExternalStore(
-    subscribe,
-    getClientCapabilities,
-    () => SERVER_CAPABILITIES,
-  );
+  const [capabilities, setCapabilities] = useState(SERVER_CAPABILITIES);
+
+  useEffect(() => {
+    setCapabilities(getDeviceCapabilities());
+
+    const update = () => setCapabilities(getDeviceCapabilities());
+    const media = window.matchMedia("(max-width: 768px)");
+
+    media.addEventListener("change", update);
+    window.addEventListener("orientationchange", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+      window.removeEventListener("orientationchange", update);
+    };
+  }, []);
+
+  return capabilities;
 }

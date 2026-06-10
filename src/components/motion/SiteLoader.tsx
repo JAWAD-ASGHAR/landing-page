@@ -54,7 +54,6 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
   }, [phase]);
 
   const isExiting = phase === "exit";
-  const showContent = phase !== "loading";
 
   const sheetTransition = simpleLoader
     ? { duration: 0.3, ease: "easeOut" as const }
@@ -66,7 +65,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {showContent ? children : null}
+      {children}
 
       <AnimatePresence>
         {phase !== "done" && (
