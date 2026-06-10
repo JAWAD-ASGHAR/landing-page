@@ -84,11 +84,19 @@ export function StackedServicesSection() {
       });
     });
 
-    const setters = decks.map((deck) => ({
-      scale: gsap.quickSetter(deck, "scale"),
-      z: gsap.quickSetter(deck, "z"),
-      filter: gsap.quickSetter(deck, "filter"),
-    }));
+    const setters = decks.map((deck) => {
+      const setScaleX = gsap.quickSetter(deck, "scaleX");
+      const setScaleY = gsap.quickSetter(deck, "scaleY");
+
+      return {
+        scale: (value: number) => {
+          setScaleX(value);
+          setScaleY(value);
+        },
+        z: gsap.quickSetter(deck, "z"),
+        filter: gsap.quickSetter(deck, "filter"),
+      };
+    });
 
     const updateDeck = () => {
       const active = getActiveCardIndex(cards);
