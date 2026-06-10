@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { site } from "@/lib/content";
 import { preloadHeroContent } from "@/lib/hero-videos";
 import { LoaderMark } from "@/components/motion/LoaderMark";
+import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 
 type Phase = "loading" | "exit" | "done";
 
@@ -21,7 +22,9 @@ function LoaderLogo() {
 
 export function SiteLoader({ children }: { children: React.ReactNode }) {
   const reducedMotion = useReducedMotion();
+  const { isMobile } = useDeviceCapabilities();
   const [phase, setPhase] = useState<Phase>("loading");
+  const [childrenVisible, setChildrenVisible] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,6 +51,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (phase === "done") {
+      setChildrenVisible(true);
       document.body.style.overflow = "";
       return;
     }
@@ -59,6 +63,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
   }, [phase]);
 
   const isExiting = phase === "exit";
+  const willChange = isExiting ? "transform" : "auto";
 
   const sheetTransition = reducedMotion
     ? { duration: 0.35, ease: "easeOut" as const }
@@ -70,14 +75,16 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {children}
+      {childrenVisible ? children : null}
 
       <AnimatePresence>
         {phase !== "done" && (
           <motion.div
             key="site-loader"
             className="fixed inset-0 z-[200] overflow-hidden"
-            style={reducedMotion ? undefined : { perspective: 1400 }}
+            style={
+              reducedMotion || isMobile ? undefined : { perspective: 1400 }
+            }
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             aria-hidden={phase === "exit"}
@@ -92,11 +99,20 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
               >
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,255,255,0.06),transparent_55%)]" />
               </motion.div>
+            ) : isMobile ? (
+              <motion.div
+                className="absolute inset-0 z-10 bg-[#080808]"
+                animate={isExiting ? { y: "-100%" } : { y: 0 }}
+                transition={sheetTransition}
+                style={{ willChange }}
+              >
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,255,255,0.06),transparent_55%)]" />
+              </motion.div>
             ) : (
               <>
                 <motion.div
                   className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[22vw] max-w-[280px] origin-left bg-gradient-to-r from-[#121212] via-[#0c0c0c] to-transparent"
-                  style={{ transformStyle: "preserve-3d" }}
+                  style={{ transformStyle: "preserve-3d", willChange }}
                   animate={
                     isExiting
                       ? {
@@ -112,7 +128,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
                 <motion.div
                   className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[22vw] max-w-[280px] origin-right bg-gradient-to-l from-[#121212] via-[#0c0c0c] to-transparent"
-                  style={{ transformStyle: "preserve-3d" }}
+                  style={{ transformStyle: "preserve-3d", willChange }}
                   animate={
                     isExiting
                       ? {
@@ -128,7 +144,11 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
                 <motion.div
                   className="absolute inset-0 z-10 bg-[#080808]"
-                  style={{ transformOrigin: "50% 100%", transformStyle: "preserve-3d" }}
+                  style={{
+                    transformOrigin: "50% 100%",
+                    transformStyle: "preserve-3d",
+                    willChange,
+                  }}
                   animate={
                     isExiting
                       ? {
@@ -150,19 +170,25 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
               className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center gap-8 px-6"
               animate={
                 isExiting
-                  ? {
-                      opacity: 0,
-                      scale: reducedMotion ? 1 : 0.94,
-                      y: reducedMotion ? 0 : -24,
-                      z: reducedMotion ? 0 : 120,
-                    }
+                  ? isMobile || reducedMotion
+                    ? { opacity: 0 }
+                    : {
+                        opacity: 0,
+                        scale: 0.94,
+                        y: -24,
+                        z: 120,
+                      }
                   : { opacity: 1, scale: 1, y: 0, z: 0 }
               }
               transition={{
                 duration: reducedMotion ? 0.25 : 0.55,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              style={reducedMotion ? undefined : { transformStyle: "preserve-3d" }}
+              style={
+                reducedMotion || isMobile
+                  ? undefined
+                  : { transformStyle: "preserve-3d", willChange }
+              }
             >
               <LoaderMark />
               <LoaderLogo />

@@ -9,6 +9,7 @@ import { useMounted } from "@/lib/use-mounted";
 
 const CROSSFADE_MS = 9000;
 const FADE_DURATION_MS = 1800;
+const PRELOAD_BEFORE_END_MS = 5000;
 
 type HeroVideoProps = {
   className?: string;
@@ -41,15 +42,30 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const preloadRef = useRef<HTMLVideoElement>(null);
   const asset = HERO_VIDEOS[activeIndex] ?? HERO_VIDEOS[0];
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % HERO_VIDEOS.length);
+    const nextIndex = (activeIndex + 1) % HERO_VIDEOS.length;
+    const nextAsset = HERO_VIDEOS[nextIndex] ?? HERO_VIDEOS[0];
+    const preloadDelay = CROSSFADE_MS - PRELOAD_BEFORE_END_MS;
+
+    const preloadTimer = window.setTimeout(() => {
+      const preloadVideo = preloadRef.current;
+      if (!preloadVideo) return;
+      preloadVideo.src = nextAsset.src;
+      preloadVideo.load();
+    }, preloadDelay);
+
+    const switchTimer = window.setTimeout(() => {
+      setActiveIndex(nextIndex);
     }, CROSSFADE_MS);
 
-    return () => window.clearInterval(interval);
-  }, []);
+    return () => {
+      window.clearTimeout(preloadTimer);
+      window.clearTimeout(switchTimer);
+    };
+  }, [activeIndex]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -91,6 +107,14 @@ function HeroSingleVideoCarousel({ className }: { className?: string }) {
           videoReady ? "opacity-100" : "opacity-0",
         )}
         style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
+      />
+      <video
+        ref={preloadRef}
+        muted
+        playsInline
+        preload="none"
+        className="pointer-events-none absolute h-0 w-0 opacity-0"
+        aria-hidden
       />
     </div>
   );
