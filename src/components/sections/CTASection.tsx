@@ -8,7 +8,7 @@ type CTASectionProps = {
 
 export function CTASection({ title, description }: CTASectionProps) {
   return (
-    <section className="section-padding bg-cta-soft">
+    <section className="section-padding bg-white">
       <div className="container-main">
         <ScrollReveal>
           <div className="mx-auto max-w-3xl text-center">

@@ -125,6 +125,31 @@ body {
   font-style: italic;
 }
 
+.footer-display-clip {
+  height: clamp(3.5rem, 10vw, 6.75rem);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.footer-display-text {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: max-content;
+  max-width: none;
+  transform: translateX(-50%);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(5.5rem, 21vw, 17rem);
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  color: var(--foreground);
+  user-select: none;
+  pointer-events: none;
+}
+
 /* Perspective deck — sticky slots, 3D transforms on inner deck */
 .stack-section {
   overflow: visible;
