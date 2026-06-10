@@ -27,6 +27,11 @@ export const metadata: Metadata = {
   description:
     "Practice Pro Solutions helps Australian GPs and clinics run smoother — from virtual reception and practice management to bookkeeping, media, supplies, and GP practice sales.",
   metadataBase: new URL(`https://${site.domain}`),
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

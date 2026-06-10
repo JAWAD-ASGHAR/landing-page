@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -33,21 +34,32 @@ function HeaderContent({
           className={cn("site-logo shrink-0", light && "site-logo--light")}
           aria-label={site.name}
         >
-          <span
-            className={cn(
-              "site-logo-mark",
-              light ? "text-white" : "text-foreground",
-            )}
-          >
-            {site.logoMark}
-          </span>
-          <span
-            className={cn(
-              "site-logo-suffix hidden min-[420px]:inline",
-              light ? "text-white/55" : "text-muted-foreground",
-            )}
-          >
-            {site.logoSuffix}
+          <Image
+            src="/favicon.png"
+            alt=""
+            width={34}
+            height={34}
+            className="site-logo-icon shrink-0"
+            aria-hidden
+            priority
+          />
+          <span className="site-logo-wordmark">
+            <span
+              className={cn(
+                "site-logo-mark",
+                light ? "text-white" : "text-foreground",
+              )}
+            >
+              {site.logoMark}
+            </span>
+            <span
+              className={cn(
+                "site-logo-suffix",
+                light ? "text-white/85" : "text-foreground",
+              )}
+            >
+              {site.logoSuffix}
+            </span>
           </span>
         </Link>
 

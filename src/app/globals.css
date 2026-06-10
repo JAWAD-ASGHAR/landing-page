@@ -98,8 +98,8 @@ body {
 
 .site-logo {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 0.625rem;
   text-decoration: none;
   transition: opacity 0.25s ease;
 }
@@ -108,21 +108,32 @@ body {
   opacity: 0.82;
 }
 
+.site-logo-icon {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+}
+
+.site-logo-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+
 .site-logo-mark {
-  font-family: var(--font-source-serif), Georgia, serif;
-  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .site-logo-suffix {
   font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  line-height: 1;
-  text-transform: uppercase;
+  font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .placeholder-skeleton {
