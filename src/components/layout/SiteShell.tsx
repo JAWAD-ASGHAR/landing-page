@@ -1,12 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useReducedMotion } from "framer-motion";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { cn } from "@/lib/utils";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const isHome = usePathname() === "/";
+  const reducedMotion = useReducedMotion();
+  const useReveal = isHome && !reducedMotion;
 
   return (
     <>
@@ -15,6 +18,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         className={cn(
           "min-h-0 flex-1 overflow-visible",
           !isHome && "pt-[4.5rem]",
+          useReveal && "home-main-reveal",
         )}
       >
         {children}

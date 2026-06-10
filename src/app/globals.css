@@ -19,6 +19,7 @@
   --stack-card-max-height: 680px;
   --stack-card-gap: 11rem;
   --stack-card-width: min(calc(100% - 1.5rem), 80rem);
+  --footer-reveal-height: clamp(22rem, 50vh, 32rem);
 }
 
 @theme inline {
@@ -66,7 +67,7 @@ body {
 }
 
 .section-padding-follow-stack {
-  padding-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
   padding-bottom: var(--section-padding);
 }
 
@@ -98,26 +99,14 @@ body {
 
 .site-logo {
   display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
+  align-items: baseline;
+  gap: 0.35em;
   text-decoration: none;
   transition: opacity 0.25s ease;
 }
 
 .site-logo:hover {
   opacity: 0.82;
-}
-
-.site-logo-icon {
-  display: block;
-  width: 2rem;
-  height: 2rem;
-}
-
-.site-logo-wordmark {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35em;
 }
 
 .site-logo-mark {
@@ -155,7 +144,7 @@ body {
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.09);
   user-select: none;
   pointer-events: none;
 }
@@ -190,15 +179,60 @@ body {
   pointer-events: none;
 }
 
+/* Homepage — footer fixed beneath content; chair scrolls over to reveal */
+.home-main-reveal {
+  position: relative;
+  z-index: 10;
+  isolation: isolate;
+  /* Must match footer height so the chair can scroll off and reveal it */
+  padding-bottom: var(--footer-reveal-height);
+}
+
+.home-chair-reveal {
+  position: relative;
+  z-index: 10;
+}
+
+/* Tighter bottom padding on chair — gap was from min-height, not scroll runway */
+.home-chair-reveal > section {
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.home-footer-fixed {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 0;
+  display: flex;
+  height: var(--footer-reveal-height);
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.home-footer-fixed .footer-display-clip {
+  flex-shrink: 0;
+}
+
+.home-footer-fixed .footer-utility {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 /* Perspective deck — sticky slots, 3D transforms on inner deck */
 .stack-section {
   overflow: visible;
-  padding-bottom: 16vh;
+  padding-bottom: 2vh;
 }
 
 .stack-perspective {
   perspective: 1500px;
   perspective-origin: 50% 0%;
+  /* Runway for the last sticky card — keep modest so Impact sits closer */
+  padding-bottom: clamp(3rem, 6vw, 5rem);
 }
 
 .stack-card {

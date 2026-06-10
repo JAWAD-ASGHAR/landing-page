@@ -18,6 +18,14 @@ export const hero = {
     "Reception, operations, media, and practice transitions — one partner supporting clinics nationwide.",
 } as const;
 
+export const chairCta = {
+  title: "Don't be shy",
+  description:
+    "Book a free consultation and explore how Practice Pro Solutions can support your clinic — from media and reception to bookkeeping, supplies, and practice transitions.",
+  primaryLabel: "Book a Consultation",
+  secondaryLabel: "Contact Us",
+} as const;
+
 export const navLinks = [
   { label: "Home", href: "/" },
   { label: "What We Do", href: "/what-we-do" },

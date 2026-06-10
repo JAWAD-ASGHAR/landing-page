@@ -145,7 +145,7 @@ export function StackedServicesSection() {
         </div>
 
         {staticStack ? (
-          <div className="space-y-6 pb-24">
+          <div className="space-y-6 pb-12">
             {services.map((service) => (
               <article
                 key={service.id}
@@ -160,7 +160,7 @@ export function StackedServicesSection() {
             ))}
           </div>
         ) : (
-          <div ref={stackRef} className="stack-perspective overflow-visible pb-8">
+          <div ref={stackRef} className="stack-perspective overflow-visible">
             {services.map((service, index) => (
               <article
                 key={service.id}
