@@ -10,7 +10,10 @@ export function ImpactSection() {
   const primaryStats = stats.slice(0, 2);
 
   return (
-    <section className="section-padding-follow-stack overflow-hidden bg-white">
+    <section
+      id="impact"
+      className="section-padding-follow-stack overflow-hidden bg-white"
+    >
       <div className="container-main">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <ParallaxLayer speed={0.05}>

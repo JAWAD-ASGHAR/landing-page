@@ -15,10 +15,17 @@
   --container-max: 80rem;
   --stack-sticky-base: 4.5rem;
   --stack-sticky-step: 0.875rem;
+  --stack-section-header-height: clamp(6.75rem, 17vw, 8.25rem);
+  --stack-card-sticky-top: calc(
+    var(--stack-sticky-base) + var(--stack-section-header-height)
+  );
   --stack-card-height: 68vh;
   --stack-card-max-height: 680px;
   --stack-card-gap: 11rem;
   --stack-card-width: min(calc(100% - 1.5rem), 80rem);
+  --stack-card-mobile-image-height: clamp(12rem, 42vh, 18rem);
+  --stack-header-z: 30;
+  --stack-card-z-base: 50;
   --footer-reveal-height: clamp(22rem, 50vh, 32rem);
 }
 
@@ -229,10 +236,27 @@ body {
 }
 
 .stack-perspective {
+  position: relative;
+  z-index: var(--stack-card-z-base);
   perspective: 1500px;
   perspective-origin: 50% 0%;
-  /* Runway for the last sticky card — keep modest so Impact sits closer */
-  padding-bottom: clamp(3rem, 6vw, 5rem);
+  /* Runway so the last card can fully stack before the section ends */
+  padding-bottom: calc(var(--stack-card-gap) + var(--stack-sticky-step) * 4);
+}
+
+.stack-section-intro {
+  position: sticky;
+  top: var(--stack-sticky-base);
+  z-index: var(--stack-header-z);
+  width: var(--stack-card-width);
+  margin-inline: auto;
+  margin-bottom: 0.75rem;
+  background: var(--background);
+  padding-bottom: 0.75rem;
+}
+
+.stack-section-intro[data-phase="hidden"] {
+  visibility: hidden;
 }
 
 .stack-card {
@@ -242,10 +266,10 @@ body {
   margin-inline: auto;
   margin-bottom: var(--stack-card-gap);
   pointer-events: none;
-}
-
-.stack-card:last-child {
-  margin-bottom: 0;
+  top: calc(
+    var(--stack-card-sticky-top) + var(--stack-index, 0) * var(--stack-sticky-step)
+  );
+  z-index: calc(var(--stack-card-z-base) + var(--stack-index, 0));
 }
 
 .stack-card-deck {
@@ -286,6 +310,15 @@ body {
   z-index: 1;
   height: 100%;
   width: 100%;
+  display: grid;
+  grid-template-rows: var(--stack-card-mobile-image-height) minmax(0, 1fr);
+}
+
+@media (min-width: 64rem) {
+  .stack-card-content {
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
 }
 
 @keyframes hero-logo-marquee {

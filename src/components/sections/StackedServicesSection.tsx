@@ -11,14 +11,66 @@ import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { services } from "@/lib/content";
 import { useMounted } from "@/lib/use-mounted";
 
-const STICKY_BASE = 72;
-const STICKY_STEP = 14;
-const SCALE_STEP = 0.03;
+const SCALE_STEP = 0.04;
 const Z_STEP = 48;
-const BRIGHTNESS_STEP = 0.09;
+const BRIGHTNESS_STEP = 0.1;
 
-function stickyTop(index: number) {
-  return STICKY_BASE + index * STICKY_STEP;
+function readCardStickyTop(card: HTMLElement) {
+  const top = parseFloat(getComputedStyle(card).top);
+  return Number.isFinite(top) ? top : 200;
+}
+
+function getHandoffRange(card: HTMLElement) {
+  const gap = parseFloat(getComputedStyle(card).marginBottom) || 176;
+  return card.getBoundingClientRect().height + gap;
+}
+
+/** 0 = approaching, 1 = pinned in its sticky slot */
+function getStickyProgress(cards: HTMLElement[], index: number) {
+  const card = cards[index];
+  const top = card.getBoundingClientRect().top;
+  const sticky = readCardStickyTop(card);
+  const range = getHandoffRange(card);
+
+  if (top <= sticky) return 1;
+  if (top >= sticky + range) return 0;
+  return 1 - (top - sticky) / range;
+}
+
+/** How many cards above have landed on this one (fractional while handoff) */
+function getCardsOnTopProgress(cards: HTMLElement[], index: number) {
+  let total = 0;
+  for (let j = index + 1; j < cards.length; j++) {
+    total += getStickyProgress(cards, j);
+  }
+  return total;
+}
+
+function deckTransform(depth: number) {
+  return {
+    scale: Math.max(0.78, 1 - depth * SCALE_STEP),
+    z: -depth * Z_STEP,
+    brightness: Math.max(0.58, 1 - depth * BRIGHTNESS_STEP),
+  };
+}
+
+function getCardDeckState(cards: HTMLElement[], index: number) {
+  const onTop = getCardsOnTopProgress(cards, index);
+  const arrival = getStickyProgress(cards, index);
+
+  if (arrival >= 1) {
+    return deckTransform(onTop);
+  }
+
+  const queued = deckTransform(onTop + 1);
+  const front = deckTransform(onTop);
+
+  return {
+    scale: queued.scale + (front.scale - queued.scale) * arrival,
+    z: queued.z + (front.z - queued.z) * arrival,
+    brightness:
+      queued.brightness + (front.brightness - queued.brightness) * arrival,
+  };
 }
 
 function serviceTags(shortTitle: string) {
@@ -28,41 +80,89 @@ function serviceTags(shortTitle: string) {
     .filter(Boolean);
 }
 
-function getActiveCardIndex(cards: HTMLElement[]) {
-  let active = 0;
-  for (let i = 0; i < cards.length; i++) {
-    const top = cards[i].getBoundingClientRect().top;
-    if (top <= stickyTop(i) + 4) active = i;
-  }
-  return active;
-}
-
-function deckTransform(depth: number) {
-  if (depth < 0) {
-    const approach = Math.min(1, Math.abs(depth));
-    return {
-      scale: 0.96 + approach * 0.04,
-      z: -30 + approach * 30,
-      brightness: 0.88 + approach * 0.12,
-    };
-  }
-  if (depth === 0) {
-    return { scale: 1, z: 0, brightness: 1 };
-  }
-  return {
-    scale: Math.max(0.82, 1 - depth * SCALE_STEP),
-    z: -depth * Z_STEP,
-    brightness: Math.max(0.62, 1 - depth * BRIGHTNESS_STEP),
-  };
-}
-
 type Service = (typeof services)[number];
+
+const STACK_HEADER_COPY = {
+  eyebrow: "Our Services",
+  title: "Our Specialized Solutions",
+  linkHref: "/what-we-do",
+  linkLabel: "View All Solutions",
+} as const;
+
+/** Hide the sticky header while the last card scrolls over it (no fade / resize). */
+function getHeaderPhase(cards: HTMLElement[], header: HTMLElement) {
+  if (!cards.length) return "visible";
+
+  const lastCard = cards[cards.length - 1];
+  const deck =
+    lastCard.querySelector<HTMLElement>("[data-stack-deck]") ?? lastCard;
+  const headerRect = header.getBoundingClientRect();
+  const deckRect = deck.getBoundingClientRect();
+  const overlap = headerRect.bottom - deckRect.top;
+
+  if (overlap > 6 || deckRect.bottom <= headerRect.top + 8) {
+    return "hidden";
+  }
+
+  return "visible";
+}
+
+function StackSectionHeader({
+  sticky = false,
+  headerRef,
+}: {
+  sticky?: boolean;
+  headerRef?: React.RefObject<HTMLDivElement | null>;
+}) {
+  if (sticky) {
+    return (
+      <div ref={headerRef} className="stack-section-intro" data-phase="visible">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
+            <p className="eyebrow mb-3 sm:mb-4">{STACK_HEADER_COPY.eyebrow}</p>
+            <h2 className="heading-display max-w-2xl text-[clamp(1.75rem,5vw,2.75rem)] font-semibold leading-[1.02]">
+              {STACK_HEADER_COPY.title}
+            </h2>
+          </div>
+          <Link
+            href={STACK_HEADER_COPY.linkHref}
+            className="inline-flex shrink-0 items-center gap-2 self-start text-xs font-semibold uppercase tracking-[0.12em] text-foreground transition-colors hover:text-accent-blue sm:self-auto"
+          >
+            {STACK_HEADER_COPY.linkLabel}
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-14 flex flex-col gap-4 sm:mb-16 sm:flex-row sm:items-end sm:justify-between">
+      <ScrollReveal>
+        <p className="eyebrow mb-3 sm:mb-4">{STACK_HEADER_COPY.eyebrow}</p>
+        <h2 className="heading-display max-w-2xl text-[clamp(1.75rem,5vw,2.75rem)] font-semibold leading-[1.02]">
+          {STACK_HEADER_COPY.title}
+        </h2>
+      </ScrollReveal>
+      <ScrollReveal delay={0.08}>
+        <Link
+          href={STACK_HEADER_COPY.linkHref}
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-foreground transition-colors hover:text-accent-blue"
+        >
+          {STACK_HEADER_COPY.linkLabel}
+          <ArrowRight size={14} />
+        </Link>
+      </ScrollReveal>
+    </div>
+  );
+}
 
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
   const staticStack = mounted && reducedMotion;
   const stackRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (staticStack || !stackRef.current) return;
@@ -84,34 +184,29 @@ export function StackedServicesSection() {
       });
     });
 
-    const setters = decks.map((deck) => {
-      const setScaleX = gsap.quickSetter(deck, "scaleX");
-      const setScaleY = gsap.quickSetter(deck, "scaleY");
-
-      return {
-        scale: (value: number) => {
-          setScaleX(value);
-          setScaleY(value);
-        },
-        z: gsap.quickSetter(deck, "z"),
-        filter: gsap.quickSetter(deck, "filter"),
-      };
-    });
-
     const updateDeck = () => {
-      const active = getActiveCardIndex(cards);
-
       cards.forEach((card, index) => {
-        const depth = active - index;
-        const { scale, z, brightness } = deckTransform(depth);
+        const { scale, z, brightness } = getCardDeckState(cards, index);
 
-        setters[index].scale(scale);
-        setters[index].z(z);
-        setters[index].filter(`brightness(${brightness})`);
+        gsap.set(decks[index], {
+          scale,
+          z,
+          filter: `brightness(${brightness})`,
+          overwrite: "auto",
+        });
 
-        decks[index].classList.toggle("stack-card-deck--front", depth === 0);
-        card.style.pointerEvents = depth === 0 ? "auto" : "none";
+        const onTop = getCardsOnTopProgress(cards, index);
+        const arrival = getStickyProgress(cards, index);
+        const isFront = arrival > 0.98 && onTop < 0.02;
+
+        decks[index].classList.toggle("stack-card-deck--front", isFront);
+        card.style.pointerEvents = isFront ? "auto" : "none";
       });
+
+      const header = headerRef.current;
+      if (header) {
+        header.dataset.phase = getHeaderPhase(cards, header);
+      }
     };
 
     const trigger = ScrollTrigger.create({
@@ -119,6 +214,7 @@ export function StackedServicesSection() {
       start: "top bottom",
       end: "bottom top",
       onUpdate: updateDeck,
+      invalidateOnRefresh: true,
     });
 
     updateDeck();
@@ -134,39 +230,26 @@ export function StackedServicesSection() {
   return (
     <section className="stack-section bg-white pt-8">
       <div className="container-main">
-        <div className="mb-14 flex flex-col gap-4 sm:mb-16 sm:flex-row sm:items-end sm:justify-between">
-          <ScrollReveal>
-            <p className="eyebrow mb-4">Our Services</p>
-            <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
-              Our Specialized Solutions
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.08}>
-            <Link
-              href="/what-we-do"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-foreground transition-colors hover:text-accent-blue"
-            >
-              View All Solutions
-              <ArrowRight size={14} />
-            </Link>
-          </ScrollReveal>
-        </div>
+        {!staticStack && <StackSectionHeader sticky headerRef={headerRef} />}
 
         {staticStack ? (
-          <div className="space-y-6 pb-12">
-            {services.map((service) => (
-              <article
-                key={service.id}
-                className="mx-auto min-h-[min(var(--stack-card-height),var(--stack-card-max-height))] overflow-hidden rounded-[2rem]"
-                style={{
-                  backgroundColor: service.stackColor,
-                  width: "var(--stack-card-width)",
-                }}
-              >
-                <StackedServiceCardBody service={service} />
-              </article>
-            ))}
-          </div>
+          <>
+            <StackSectionHeader />
+            <div className="space-y-6 pb-12">
+              {services.map((service) => (
+                <article
+                  key={service.id}
+                  className="mx-auto min-h-[min(var(--stack-card-height),var(--stack-card-max-height))] overflow-hidden rounded-[2rem]"
+                  style={{
+                    backgroundColor: service.stackColor,
+                    width: "var(--stack-card-width)",
+                  }}
+                >
+                  <StackedServiceCardBody service={service} />
+                </article>
+              ))}
+            </div>
+          </>
         ) : (
           <div ref={stackRef} className="stack-perspective overflow-visible">
             {services.map((service, index) => (
@@ -174,10 +257,11 @@ export function StackedServicesSection() {
                 key={service.id}
                 data-stack-card
                 className="stack-card"
-                style={{
-                  top: stickyTop(index),
-                  zIndex: index + 1,
-                }}
+                style={
+                  {
+                    "--stack-index": index,
+                  } as React.CSSProperties
+                }
                 aria-label={`${service.title} service`}
               >
                 <div
@@ -206,19 +290,37 @@ function StackedServiceCardBody({ service }: { service: Service }) {
   const highlights = service.details.benefits.slice(0, 2);
 
   return (
-    <div className="stack-card-content grid h-full grid-rows-[auto_14rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:grid-rows-1">
-      <div className="flex h-full flex-col justify-between px-6 py-7 sm:px-8 sm:py-8 lg:px-10 lg:py-9 xl:px-12">
-        <div className="flex flex-col gap-5 lg:gap-6">
-          <h3 className="heading-display text-[clamp(1.625rem,3.2vw,2.625rem)] font-semibold leading-[1.05] text-white">
+    <div className="stack-card-content">
+      <div className="relative order-1 min-h-0 overflow-hidden lg:order-2 lg:h-full">
+        <Image
+          src={service.stackImage}
+          alt={service.stackImageLabel}
+          fill
+          className="object-cover"
+          sizes="(min-width: 1024px) 42vw, 100vw"
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent lg:bg-gradient-to-r lg:from-black/45 lg:via-black/15 lg:to-transparent"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 hidden bg-gradient-to-l from-black/20 via-transparent to-transparent lg:block"
+          aria-hidden
+        />
+      </div>
+
+      <div className="order-2 flex min-h-0 flex-col justify-between px-5 py-5 sm:px-8 sm:py-8 lg:order-1 lg:px-10 lg:py-9 xl:px-12">
+        <div className="flex flex-col gap-3 sm:gap-5 lg:gap-6">
+          <h3 className="heading-display text-[clamp(1.5rem,4.8vw,2.625rem)] font-semibold leading-[1.05] text-white">
             {service.title}
           </h3>
 
           {tags.length > 0 && (
-            <ul className="flex flex-wrap gap-2">
+            <ul className="flex flex-wrap gap-1.5 sm:gap-2">
               {tags.map((tag) => (
                 <li
                   key={tag}
-                  className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[0.625rem] font-medium uppercase tracking-[0.12em] text-white/70"
+                  className="rounded-full border border-white/15 bg-white/5 px-2.5 py-0.5 text-[0.5625rem] font-medium uppercase tracking-[0.12em] text-white/70 sm:px-3 sm:py-1 sm:text-[0.625rem]"
                 >
                   {tag}
                 </li>
@@ -226,18 +328,17 @@ function StackedServiceCardBody({ service }: { service: Service }) {
             </ul>
           )}
 
-          <div className="space-y-3">
-            <p className="max-w-md text-[0.9375rem] leading-relaxed text-white/80">
-              {service.description}
-            </p>
-            <p className="max-w-md text-sm leading-relaxed text-white/55">
-              {service.details.intro}
-            </p>
-          </div>
+          <p className="line-clamp-2 max-w-md text-sm leading-relaxed text-white/80 sm:text-[0.9375rem] lg:line-clamp-none">
+            {service.description}
+          </p>
+
+          <p className="hidden max-w-md text-sm leading-relaxed text-white/55 md:block">
+            {service.details.intro}
+          </p>
         </div>
 
-        <div className="flex flex-col gap-5 lg:gap-6">
-          <ul className="space-y-2">
+        <div className="mt-4 flex flex-col gap-4 sm:mt-0 sm:gap-5 lg:gap-6">
+          <ul className="hidden space-y-2 md:block">
             {highlights.map((item) => (
               <li
                 key={item}
@@ -254,30 +355,12 @@ function StackedServiceCardBody({ service }: { service: Service }) {
 
           <Link
             href={`/what-we-do#${service.id}`}
-            className="inline-flex w-fit items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#111111] transition-colors hover:bg-white/90"
+            className="inline-flex w-fit items-center gap-2.5 rounded-full bg-white px-4 py-2 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-[#111111] transition-colors hover:bg-white/90 sm:px-5 sm:py-2.5 sm:text-xs"
           >
             Learn More
             <ArrowRight size={14} strokeWidth={2.5} />
           </Link>
         </div>
-      </div>
-
-      <div className="relative min-h-0 overflow-hidden lg:h-full">
-        <Image
-          src={service.stackImage}
-          alt={service.stackImageLabel}
-          fill
-          className="object-cover"
-          sizes="(min-width: 1024px) 42vw, 100vw"
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent lg:from-black/45 lg:via-transparent"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent lg:bg-gradient-to-l lg:from-black/20 lg:via-transparent lg:to-transparent"
-          aria-hidden
-        />
       </div>
     </div>
   );
