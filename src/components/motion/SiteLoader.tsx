@@ -62,7 +62,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
   }, [phase]);
 
   const contentRevealed = phase !== "loading";
-  const siteLoaderReady = contentRevealed;
+  const siteLoaderReady = phase === "done";
 
   const isExiting = phase === "exit";
   const willChange = isExiting ? "transform" : "auto";
