@@ -16,17 +16,22 @@ function StaticLoaderMark() {
   );
 }
 
-export function LoaderMark() {
+type LoaderMarkProps = {
+  forceStatic?: boolean;
+};
+
+export function LoaderMark({ forceStatic = false }: LoaderMarkProps) {
   const reducedMotion = useReducedMotion();
   const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const useStatic = forceStatic || reducedMotion;
 
   useEffect(() => {
-    if (reducedMotion) {
+    if (useStatic) {
       lottieRef.current?.goToAndStop(0, true);
     }
-  }, [reducedMotion]);
+  }, [useStatic]);
 
-  if (reducedMotion) {
+  if (useStatic) {
     return <StaticLoaderMark />;
   }
 

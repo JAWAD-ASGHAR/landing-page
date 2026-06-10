@@ -7,7 +7,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 
 type ParallaxLayerProps = {
   children: React.ReactNode;
@@ -16,29 +16,24 @@ type ParallaxLayerProps = {
   speed?: number;
 };
 
-export function ParallaxLayer({
+function ParallaxLayerMotion({
   children,
   className,
-  speed = 0.12,
+  speed,
 }: ParallaxLayerProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
 
-  const magnitude = Math.abs(speed);
-  const sign = speed < 0 ? -1 : 1;
+  const magnitude = Math.abs(speed ?? 0.12);
+  const sign = (speed ?? 0.12) < 0 ? -1 : 1;
   const y = useTransform(
     scrollYProgress,
     [0, 1],
     [`${-sign * magnitude * 100}%`, `${sign * magnitude * 100}%`],
   );
-
-  if (reducedMotion) {
-    return <div className={className}>{children}</div>;
-  }
 
   return (
     <div ref={ref} className={className}>
@@ -46,5 +41,24 @@ export function ParallaxLayer({
         {children}
       </motion.div>
     </div>
+  );
+}
+
+export function ParallaxLayer({
+  children,
+  className,
+  speed = 0.12,
+}: ParallaxLayerProps) {
+  const reducedMotion = useReducedMotion();
+  const { useHeavyMotion } = useDeviceCapabilities();
+
+  if (reducedMotion || !useHeavyMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <ParallaxLayerMotion className={className} speed={speed}>
+      {children}
+    </ParallaxLayerMotion>
   );
 }

@@ -24,6 +24,9 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
   const reducedMotion = useReducedMotion();
   const isMobile =
     typeof window !== "undefined" && window.innerWidth < 768;
+  const isIOSPhone =
+    typeof navigator !== "undefined" && /iPhone|iPod/i.test(navigator.userAgent);
+  const lightLoader = reducedMotion || isMobile;
   const [phase, setPhase] = useState<Phase>("loading");
 
   useEffect(() => {
@@ -63,6 +66,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
   const contentRevealed = phase !== "loading";
   const siteLoaderReady = phase === "done";
+  const shouldMountChildren = isIOSPhone ? phase === "done" : true;
 
   const isExiting = phase === "exit";
   const willChange = isExiting ? "transform" : "auto";
@@ -77,45 +81,36 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
 
   return (
     <SiteLoaderReadyContext.Provider value={siteLoaderReady}>
-      <div
-        style={{
-          opacity: contentRevealed ? 1 : 0,
-          transition: "opacity 0.3s ease",
-          pointerEvents: phase === "done" ? undefined : "none",
-        }}
-        aria-hidden={!contentRevealed}
-      >
-        {children}
-      </div>
+      {shouldMountChildren ? (
+        <div
+          style={{
+            opacity: contentRevealed ? 1 : 0,
+            transition: "opacity 0.3s ease",
+            pointerEvents: phase === "done" ? undefined : "none",
+          }}
+          aria-hidden={!contentRevealed}
+        >
+          {children}
+        </div>
+      ) : null}
 
       <AnimatePresence>
         {phase !== "done" && (
           <motion.div
             key="site-loader"
             className="fixed inset-0 z-[200] overflow-hidden"
-            style={
-              reducedMotion || isMobile ? undefined : { perspective: 1400 }
-            }
+            style={lightLoader ? undefined : { perspective: 1400 }}
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             aria-hidden={phase === "exit"}
             aria-live="polite"
             aria-busy={phase === "loading"}
           >
-            {reducedMotion ? (
+            {lightLoader ? (
               <motion.div
                 className="absolute inset-0 z-10 bg-[#080808]"
                 animate={isExiting ? { opacity: 0 } : { opacity: 1 }}
                 transition={sheetTransition}
-              >
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,255,255,0.06),transparent_55%)]" />
-              </motion.div>
-            ) : isMobile ? (
-              <motion.div
-                className="absolute inset-0 z-10 bg-[#080808]"
-                animate={isExiting ? { y: "-100%" } : { y: 0 }}
-                transition={sheetTransition}
-                style={{ willChange }}
               >
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,255,255,0.06),transparent_55%)]" />
               </motion.div>
@@ -181,7 +176,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
               className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center gap-8 px-6"
               animate={
                 isExiting
-                  ? isMobile || reducedMotion
+                  ? lightLoader
                     ? { opacity: 0 }
                     : {
                         opacity: 0,
@@ -196,12 +191,12 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={
-                reducedMotion || isMobile
+                lightLoader
                   ? undefined
                   : { transformStyle: "preserve-3d", willChange }
               }
             >
-              <LoaderMark />
+              <LoaderMark forceStatic={isMobile} />
               <LoaderLogo />
             </motion.div>
           </motion.div>

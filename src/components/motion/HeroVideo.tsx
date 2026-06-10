@@ -217,10 +217,23 @@ function HeroPosterOnly({ className }: { className?: string }) {
   );
 }
 
+function HeroStaticPoster({ className }: { className?: string }) {
+  const asset = HERO_VIDEOS[0];
+
+  return (
+    <div className={cn("absolute inset-0 bg-[#111111]", className)} aria-hidden>
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${asset.poster})` }}
+      />
+    </div>
+  );
+}
+
 export function HeroVideo({ className }: HeroVideoProps) {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
-  const { playHeroVideo, isMobile } = useDeviceCapabilities();
+  const { playHeroVideo, isMobile, isIOSPhone } = useDeviceCapabilities();
 
   if (!mounted) {
     return (
@@ -231,7 +244,11 @@ export function HeroVideo({ className }: HeroVideoProps) {
   }
 
   if (!playHeroVideo) {
-    return <HeroPosterOnly className={className} />;
+    return isIOSPhone ? (
+      <HeroStaticPoster className={className} />
+    ) : (
+      <HeroPosterOnly className={className} />
+    );
   }
 
   if (reducedMotion) {

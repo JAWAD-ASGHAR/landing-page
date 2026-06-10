@@ -47,8 +47,9 @@ export function hasLimitedMemory(): boolean {
   return deviceMemory <= 4;
 }
 
-/** Skip video only on data-saver or very slow connections. */
+/** Skip video on iOS (WebKit decode crashes) and data-saver / slow connections. */
 export function shouldPlayHeroVideo(): boolean {
+  if (isIOSPhone()) return false;
   if (hasSaveDataEnabled()) return false;
   if (hasSlowConnection()) return false;
   return true;

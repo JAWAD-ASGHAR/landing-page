@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { cn } from "@/lib/utils";
 
 type ScrollRevealProps = {
@@ -29,22 +30,24 @@ export function ScrollReveal({
   once = true,
 }: ScrollRevealProps) {
   const reducedMotion = useReducedMotion();
+  const { useHeavyMotion } = useDeviceCapabilities();
+  const staticReveal = reducedMotion || !useHeavyMotion;
+
+  if (staticReveal) {
+    return <div className={cn(className)}>{children}</div>;
+  }
 
   return (
     <motion.div
       className={cn(className)}
-      initial={reducedMotion ? false : { opacity: 0, ...offsets[direction] }}
+      initial={{ opacity: 0, ...offsets[direction] }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once, margin: "-80px" }}
-      transition={
-        reducedMotion
-          ? { duration: 0 }
-          : {
-              duration,
-              delay,
-              ease: [0.22, 1, 0.36, 1],
-            }
-      }
+      transition={{
+        duration,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       {children}
     </motion.div>

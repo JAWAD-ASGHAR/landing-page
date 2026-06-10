@@ -2,6 +2,7 @@
 
 import { useReducedMotion } from "framer-motion";
 import { clientLogos } from "@/lib/content";
+import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { useMounted } from "@/lib/use-mounted";
 
 const TRACK_REPEATS = 4;
@@ -36,7 +37,8 @@ function MarqueeTrack({ ariaHidden = false }: { ariaHidden?: boolean }) {
 export function HeroLogoMarquee() {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
-  const staticLogos = mounted && reducedMotion;
+  const { useHeavyMotion } = useDeviceCapabilities();
+  const staticLogos = mounted && (reducedMotion || !useHeavyMotion);
 
   if (staticLogos) {
     return (
