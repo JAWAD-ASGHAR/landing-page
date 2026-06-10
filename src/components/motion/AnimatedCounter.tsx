@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView, useReducedMotion } from "framer-motion";
-import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 
 type AnimatedCounterProps = {
   value: number;
@@ -20,12 +19,10 @@ export function AnimatedCounter({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
   const reducedMotion = useReducedMotion();
-  const { useHeavyMotion } = useDeviceCapabilities();
-  const staticCounter = reducedMotion || !useHeavyMotion;
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    if (!isInView || staticCounter) return;
+    if (!isInView || reducedMotion) return;
 
     let startTime: number | null = null;
     let frameId = 0;
@@ -40,9 +37,9 @@ export function AnimatedCounter({
 
     frameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameId);
-  }, [isInView, value, duration, staticCounter]);
+  }, [isInView, value, duration, reducedMotion]);
 
-  const shown = staticCounter ? value : display;
+  const shown = reducedMotion ? value : display;
 
   return (
     <span ref={ref} className={className}>

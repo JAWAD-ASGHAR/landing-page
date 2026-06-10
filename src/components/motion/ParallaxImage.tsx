@@ -8,7 +8,6 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { cn } from "@/lib/utils";
 
 type ParallaxImageProps = {
@@ -32,9 +31,6 @@ export function ParallaxImage({
 }: ParallaxImageProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  const { useHeavyMotion } = useDeviceCapabilities();
-  const staticImage = reducedMotion || !useHeavyMotion;
-
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -54,9 +50,9 @@ export function ParallaxImage({
       className={cn("relative overflow-hidden", className)}
     >
       <motion.div
-        style={staticImage ? undefined : { y }}
+        style={reducedMotion ? undefined : { y }}
         className={cn(
-          !staticImage && "will-change-transform",
+          "will-change-transform",
           src
             ? "absolute inset-x-0 -top-[12.5%] h-[125%] w-full"
             : "placeholder-skeleton absolute inset-0 min-h-full w-full",

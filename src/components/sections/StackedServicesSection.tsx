@@ -8,9 +8,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
-import { isMobileDevice } from "@/lib/device-capabilities";
 import { services } from "@/lib/content";
-import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 import { useMounted } from "@/lib/use-mounted";
 
 const STICKY_BASE = 72;
@@ -39,17 +37,6 @@ function getActiveCardIndex(cards: HTMLElement[]) {
   return active;
 }
 
-const BRIGHTNESS_MIN = 0.62;
-const BRIGHTNESS_MAX = 1;
-const OPACITY_MIN = 0.5;
-const OPACITY_MAX = 1;
-
-function brightnessToOpacity(brightness: number) {
-  const t =
-    (brightness - BRIGHTNESS_MIN) / (BRIGHTNESS_MAX - BRIGHTNESS_MIN);
-  return OPACITY_MIN + t * (OPACITY_MAX - OPACITY_MIN);
-}
-
 function deckTransform(depth: number) {
   if (depth < 0) {
     const approach = Math.min(1, Math.abs(depth));
@@ -74,8 +61,7 @@ type Service = (typeof services)[number];
 export function StackedServicesSection() {
   const reducedMotion = useReducedMotion();
   const mounted = useMounted();
-  const { useHeavyMotion } = useDeviceCapabilities();
-  const staticStack = !mounted || reducedMotion || !useHeavyMotion;
+  const staticStack = mounted && reducedMotion;
   const stackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -98,26 +84,13 @@ export function StackedServicesSection() {
       });
     });
 
-    const isMobileGsap = isMobileDevice();
-
     const setters = decks.map((deck) => ({
       scale: gsap.quickSetter(deck, "scale"),
       z: gsap.quickSetter(deck, "z"),
-      filter: isMobileGsap ? null : gsap.quickSetter(deck, "filter"),
-      opacity: isMobileGsap ? gsap.quickSetter(deck, "opacity") : null,
+      filter: gsap.quickSetter(deck, "filter"),
     }));
 
-    let scrollIdleTimer: number | undefined;
-
-    const setWillChange = (value: "transform" | "auto") => {
-      decks.forEach((deck) => {
-        deck.style.willChange = value;
-      });
-    };
-
     const updateDeck = () => {
-      setWillChange("transform");
-
       const active = getActiveCardIndex(cards);
 
       cards.forEach((card, index) => {
@@ -126,19 +99,11 @@ export function StackedServicesSection() {
 
         setters[index].scale(scale);
         setters[index].z(z);
-
-        if (isMobileGsap) {
-          setters[index].opacity!(brightnessToOpacity(brightness));
-        } else {
-          setters[index].filter!(`brightness(${brightness})`);
-        }
+        setters[index].filter(`brightness(${brightness})`);
 
         decks[index].classList.toggle("stack-card-deck--front", depth === 0);
         card.style.pointerEvents = depth === 0 ? "auto" : "none";
       });
-
-      if (scrollIdleTimer) window.clearTimeout(scrollIdleTimer);
-      scrollIdleTimer = window.setTimeout(() => setWillChange("auto"), 150);
     };
 
     const trigger = ScrollTrigger.create({
@@ -152,21 +117,9 @@ export function StackedServicesSection() {
     ScrollTrigger.addEventListener("refreshInit", updateDeck);
     ScrollTrigger.refresh();
 
-    const images = stackRef.current.querySelectorAll("img");
-    const refreshLayout = () => ScrollTrigger.refresh();
-    images.forEach((image) => {
-      if (!image.complete) {
-        image.addEventListener("load", refreshLayout, { once: true });
-      }
-    });
-    window.addEventListener("orientationchange", refreshLayout);
-
     return () => {
-      if (scrollIdleTimer) window.clearTimeout(scrollIdleTimer);
-      setWillChange("auto");
       trigger.kill();
       ScrollTrigger.removeEventListener("refreshInit", updateDeck);
-      window.removeEventListener("orientationchange", refreshLayout);
     };
   }, [staticStack]);
 

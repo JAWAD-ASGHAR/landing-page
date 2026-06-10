@@ -7,12 +7,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { chairCta } from "@/lib/content";
-import { useDeviceCapabilities } from "@/lib/use-device-capabilities";
 
 export function ChairCTASection() {
   const reducedMotion = useReducedMotion();
-  const { useHeavyMotion } = useDeviceCapabilities();
-  const animateChair = !reducedMotion && useHeavyMotion;
 
   return (
     <section className="section-padding relative z-10 overflow-hidden bg-[#e6e6ea]">
@@ -54,20 +51,20 @@ export function ChairCTASection() {
         <motion.div
           className="relative w-[138%] max-w-none translate-x-[14%] sm:translate-x-[16%] lg:translate-x-[18%]"
           animate={
-            animateChair
-              ? {
+            reducedMotion
+              ? undefined
+              : {
                   y: [0, -14, 0],
                 }
-              : undefined
           }
           transition={
-            animateChair
-              ? {
+            reducedMotion
+              ? undefined
+              : {
                   duration: 5.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }
-              : undefined
           }
         >
           <Image
