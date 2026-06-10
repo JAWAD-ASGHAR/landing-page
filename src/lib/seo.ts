@@ -8,7 +8,7 @@ export const siteUrl = new URL(
 export const defaultDescription =
   "Practice Pro Solutions helps Australian GPs and clinics run smoother — from virtual reception and practice management to bookkeeping, media, supplies, and GP practice sales.";
 
-export const defaultOgImage = "/home/Strong Foundations.jpg";
+export const defaultOgImage = "/home/Strong Foundations.webp";
 
 export const seoKeywords = [
   "general practice support Australia",

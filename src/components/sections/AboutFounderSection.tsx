@@ -14,7 +14,7 @@ export function AboutFounderSection() {
           <ScrollReveal direction="left">
             <div className="relative">
               <ParallaxImage
-                src="/home/Practice Growth.jpg"
+                src="/home/Practice Growth.webp"
                 alt="Healthcare professional preparing for patient care"
                 className="aspect-[4/5] min-h-[24rem] rounded-3xl"
                 imageClassName="object-top"

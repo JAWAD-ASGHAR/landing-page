@@ -120,7 +120,7 @@ export function ContactDetailsSection() {
             <ScrollReveal delay={0.14}>
               <div className="relative overflow-hidden rounded-3xl">
                 <ParallaxImage
-                  src="/contact/contact.jpg"
+                  src="/contact/contact.webp"
                   alt="Practice team welcoming a consultation enquiry"
                   className="aspect-[3/2] min-h-[13rem]"
                   speed={0.14}

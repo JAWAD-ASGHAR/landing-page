@@ -43,7 +43,7 @@ export function ImpactSection() {
           <ScrollReveal direction="right" delay={0.1}>
             <div className="relative">
               <ParallaxImage
-                src="/home/Practice Growth.jpg"
+                src="/home/Practice Growth.webp"
                 alt="Healthcare professional preparing for patient care"
                 className="aspect-[4/5] min-h-[28rem]"
                 imageClassName="object-top"

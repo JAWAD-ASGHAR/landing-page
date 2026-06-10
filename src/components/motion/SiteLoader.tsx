@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { site } from "@/lib/content";
-import { preloadHeroVideos } from "@/lib/hero-videos";
+import { preloadHeroContent } from "@/lib/hero-videos";
 import { LoaderMark } from "@/components/motion/LoaderMark";
 
 type Phase = "loading" | "exit" | "done";
@@ -17,7 +17,7 @@ export function SiteLoader({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
-    preloadHeroVideos().then(() => {
+    preloadHeroContent().then(() => {
       if (!cancelled) setPhase("exit");
     });
 
