@@ -74,6 +74,7 @@ export function FloatingCTABar({
           href={buttonHref}
           className="mt-4 w-full rounded-full px-5 py-2.5"
           onClick={() => setOpen(false)}
+          cursorLabel="Consult"
         >
           {buttonLabel}
         </Button>

@@ -8,6 +8,7 @@ type ButtonProps = {
   className?: string;
   type?: "button" | "submit";
   onClick?: () => void;
+  cursorLabel?: string;
 };
 
 const variants = {
@@ -26,6 +27,7 @@ export function Button({
   className,
   type = "button",
   onClick,
+  cursorLabel,
 }: ButtonProps) {
   const classes = cn(
     "inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue",
@@ -35,14 +37,24 @@ export function Button({
 
   if (href) {
     return (
-      <Link href={href} className={classes} onClick={onClick}>
+      <Link
+        href={href}
+        className={classes}
+        onClick={onClick}
+        {...(cursorLabel ? { "data-cursor-label": cursorLabel } : {})}
+      >
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes}>
+    <button
+      type={type}
+      onClick={onClick}
+      className={classes}
+      {...(cursorLabel ? { "data-cursor-label": cursorLabel } : {})}
+    >
       {children}
     </button>
   );

@@ -87,7 +87,7 @@ function HeaderBar({
       )}
 
       <div className="hidden justify-end lg:flex lg:justify-self-end">
-        <Button href="/contact" variant={light ? "hero" : "primary"}>
+        <Button href="/contact" variant={light ? "hero" : "primary"} cursorLabel="Consult">
           Book Consultation
         </Button>
       </div>
@@ -165,6 +165,7 @@ function MobileMenu({ light = false, onClose, pathname }: MobileMenuProps) {
           className="mt-4 w-full"
           variant={light ? "hero" : "primary"}
           onClick={onClose}
+          cursorLabel="Consult"
         >
           Book Consultation
         </Button>

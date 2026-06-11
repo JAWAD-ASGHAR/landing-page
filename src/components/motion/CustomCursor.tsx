@@ -1,20 +1,20 @@
 "use client";
 
 import {
+  AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
-  useSpring,
 } from "framer-motion";
 import { useEffect, useState } from "react";
+import {
+  CLICKABLE_SELECTOR,
+  resolveCursorLabel,
+} from "@/lib/cursor-labels";
 import { useMounted } from "@/lib/use-mounted";
 
-const CLICKABLE_SELECTOR =
-  'a, button, [role="button"], input, textarea, select, label[for], summary, .cursor-pointer, [data-cursor-hover]';
-
-const BASE_SIZE = 30;
-const HOVER_SCALE = 1.18;
-const CLICK_SCALE = 0.82;
+const HOVER_SCALE = 1.12;
+const CLICK_SCALE = 0.88;
 
 type CursorTone = "on-light" | "on-dark";
 
@@ -67,6 +67,23 @@ function resolveCursorTone(element: Element | null): CursorTone {
   return "on-light";
 }
 
+function CursorPointer() {
+  return (
+    <svg
+      className="custom-cursor__svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      aria-hidden
+    >
+      <path
+        d="M3.5 2.5 L3.5 14.25 L7.75 10.75 L10.25 16.75 L12.25 15.75 L9.75 9.75 L15.25 9.75 Z"
+        className="custom-cursor__shape"
+      />
+    </svg>
+  );
+}
+
 export function CustomCursor() {
   const mounted = useMounted();
   const reducedMotion = useReducedMotion();
@@ -75,11 +92,10 @@ export function CustomCursor() {
   const [hovering, setHovering] = useState(false);
   const [clicking, setClicking] = useState(false);
   const [tone, setTone] = useState<CursorTone>("on-light");
+  const [label, setLabel] = useState<string | null>(null);
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-  const x = useSpring(cursorX, { damping: 28, stiffness: 420, mass: 0.45 });
-  const y = useSpring(cursorY, { damping: 28, stiffness: 420, mass: 0.45 });
 
   useEffect(() => {
     if (!mounted || reducedMotion) return;
@@ -96,7 +112,10 @@ export function CustomCursor() {
       cursorY.set(event.clientY);
 
       const target = document.elementFromPoint(event.clientX, event.clientY);
-      setHovering(Boolean(target?.closest(CLICKABLE_SELECTOR)));
+      const clickable = target?.closest(CLICKABLE_SELECTOR) ?? null;
+
+      setHovering(Boolean(clickable));
+      setLabel(clickable ? resolveCursorLabel(target) : null);
       setTone(resolveCursorTone(target));
       setVisible(true);
     };
@@ -124,43 +143,52 @@ export function CustomCursor() {
 
   if (!mounted || reducedMotion || !enabled) return null;
 
-  const targetScale = clicking
-    ? CLICK_SCALE
-    : hovering
-      ? HOVER_SCALE
-      : 1;
+  const pointerScale = clicking ? CLICK_SCALE : hovering ? HOVER_SCALE : 1;
 
   return (
     <motion.div
       aria-hidden
-      className={`custom-cursor pointer-events-none fixed top-0 left-0 z-[9999] custom-cursor--${tone}`}
-      style={{
-        x,
-        y,
-        width: BASE_SIZE,
-        height: BASE_SIZE,
-        marginLeft: -BASE_SIZE / 2,
-        marginTop: -BASE_SIZE / 2,
-      }}
-      animate={{
-        opacity: visible ? 1 : 0,
-        scale: targetScale,
-      }}
-      transition={
-        clicking
-          ? { scale: { duration: 0.09, ease: [0.4, 0, 0.2, 1] } }
-          : {
-              scale: {
-                type: "spring",
-                stiffness: 520,
-                damping: 16,
-                mass: 0.55,
-              },
-              opacity: { duration: 0.15 },
-            }
-      }
+      className={`custom-cursor pointer-events-none fixed top-0 left-0 z-[9999] custom-cursor--${tone}${hovering ? " custom-cursor--hover" : ""}`}
+      style={{ x: cursorX, y: cursorY }}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={{ opacity: { duration: 0.15 } }}
     >
-      <span className="custom-cursor__ring" />
+      <div className="custom-cursor__inner">
+        <motion.div
+          className="custom-cursor__pointer"
+          animate={{ scale: pointerScale }}
+          transition={
+            clicking
+              ? { duration: 0.09, ease: [0.4, 0, 0.2, 1] }
+              : {
+                  type: "spring",
+                  stiffness: 520,
+                  damping: 16,
+                  mass: 0.55,
+                }
+          }
+        >
+          <CursorPointer />
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          {hovering && label ? (
+            <motion.span
+              key={label}
+              className="custom-cursor__label"
+              initial={{ opacity: 0, x: -6, scale: 0.94 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -4, scale: 0.96 }}
+              transition={{
+                duration: 0.16,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              {label}
+            </motion.span>
+          ) : null}
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
