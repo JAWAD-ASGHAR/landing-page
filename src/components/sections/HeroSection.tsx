@@ -35,7 +35,7 @@ export function HeroSection() {
             {hero.description}
           </p>
           <div className="mt-8">
-            <Button href="#services" variant="hero" cursorLabel="Explore">
+            <Button href="#services" variant="hero" cursorLabel="View">
               View Our Services
             </Button>
           </div>

@@ -132,13 +132,15 @@ export function WhatWeDoTimelineSection() {
         </ScrollReveal>
       </div>
 
-      <div className="what-we-do-timeline__track relative mt-16 sm:mt-20 lg:mt-24">
-        <div className="what-we-do-timeline__line hidden lg:block" aria-hidden />
+      <div className="what-we-do-timeline__track mt-16 sm:mt-20 lg:mt-24">
+        <div className="container-main what-we-do-timeline__container">
+          <div className="what-we-do-timeline__line hidden lg:block" aria-hidden />
 
-        <div className="container-main space-y-16 sm:space-y-20 lg:space-y-28">
-          {services.map((service, index) => (
-            <TimelineRow key={service.id} service={service} index={index} />
-          ))}
+          <div className="space-y-16 sm:space-y-20 lg:space-y-28">
+            {services.map((service, index) => (
+              <TimelineRow key={service.id} service={service} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

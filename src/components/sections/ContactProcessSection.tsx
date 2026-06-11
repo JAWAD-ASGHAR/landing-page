@@ -2,6 +2,7 @@
 
 import { ParallaxLayer } from "@/components/motion/ParallaxLayer";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { ServiceGlowCard } from "@/components/motion/ServiceGlowCard";
 import { contactPage } from "@/lib/content";
 
 export function ContactProcessSection() {
@@ -26,26 +27,28 @@ export function ContactProcessSection() {
 
         <div className="mt-16 grid gap-6 lg:grid-cols-3 lg:gap-8">
           {contactPage.processSteps.map((step, index) => (
-            <ScrollReveal key={step.title} delay={index * 0.08}>
-              <article className="relative h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-7 sm:p-8">
-                <span
-                  className="feature-number absolute -right-2 -top-4 text-[clamp(4rem,10vw,7rem)]"
-                  aria-hidden
-                >
-                  {step.step}
-                </span>
-                <div className="relative z-10">
-                  <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-white/40">
-                    Step {step.step}
-                  </p>
-                  <h3 className="heading-display mt-4 text-xl font-semibold sm:text-2xl">
-                    {step.title}
-                  </h3>
-                  <p className="mt-4 text-sm leading-relaxed text-white/55 sm:text-base">
-                    {step.description}
-                  </p>
-                </div>
-              </article>
+            <ScrollReveal key={step.title} delay={index * 0.08} className="h-full">
+              <ServiceGlowCard className="h-full">
+                <article className="relative h-full p-7 sm:p-8">
+                  <span
+                    className="feature-number absolute -right-2 -top-4 text-[clamp(4rem,10vw,7rem)]"
+                    aria-hidden
+                  >
+                    {step.step}
+                  </span>
+                  <div className="relative z-10">
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-white/40">
+                      Step {step.step}
+                    </p>
+                    <h3 className="heading-display mt-4 text-xl font-semibold sm:text-2xl">
+                      {step.title}
+                    </h3>
+                    <p className="mt-4 text-sm leading-relaxed text-white/55 sm:text-base">
+                      {step.description}
+                    </p>
+                  </div>
+                </article>
+              </ServiceGlowCard>
             </ScrollReveal>
           ))}
         </div>
