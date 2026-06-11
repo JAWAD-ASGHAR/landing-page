@@ -3,6 +3,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { AboutFounderSection } from "@/components/sections/AboutFounderSection";
 import { AboutServicesSection } from "@/components/sections/AboutServicesSection";
 import { AboutValuesSection } from "@/components/sections/AboutValuesSection";
+import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
 import { FAQAccordion } from "@/components/sections/FAQAccordion";
 import { HomeChairReveal } from "@/components/sections/HomeChairReveal";
 import { HowItWorks, HowItWorksIntro } from "@/components/sections/HowItWorks";
@@ -11,6 +12,7 @@ import { ChairCTASection } from "@/components/sections/ChairCTASection";
 import {
   aboutPage,
   faqs,
+  testimonials,
 } from "@/lib/content";
 import {
   breadcrumbJsonLd,
@@ -75,6 +77,22 @@ export default function AboutPage() {
       <AboutFounderSection />
 
       <AboutValuesSection />
+
+      <section className="section-padding overflow-hidden bg-[#e6e6ea]">
+        <div className="container-main">
+          <ScrollReveal>
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="eyebrow mb-5">Testimonials</p>
+              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
+                What our clients say
+              </h2>
+            </div>
+          </ScrollReveal>
+          <div className="mt-12">
+            <TestimonialCarousel testimonials={testimonials} />
+          </div>
+        </div>
+      </section>
 
       <section className="section-padding overflow-hidden bg-dark text-white">
         <div className="container-main">

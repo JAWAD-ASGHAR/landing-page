@@ -5,8 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "framer-motion";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
-import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
-import { aboutValues, testimonials } from "@/lib/content";
+import { aboutValues } from "@/lib/content";
 import { useMounted } from "@/lib/use-mounted";
 
 const MOBILE_BREAKPOINT = 640;
@@ -247,20 +246,6 @@ export function AboutValuesSection() {
             {aboutValues.map((value, index) => (
               <ValueCard key={value.id} value={value} index={index} />
             ))}
-          </div>
-        </div>
-
-        <div className="values-scroll-footer">
-          <div className="container-main">
-            <div className="values-scroll-footer-intro">
-              <p className="eyebrow mb-3">Testimonials</p>
-              <h2 className="heading-display text-2xl font-semibold sm:text-3xl">
-                What our clients say
-              </h2>
-            </div>
-            <div className="values-scroll-footer-carousel">
-              <TestimonialCarousel testimonials={testimonials} />
-            </div>
           </div>
         </div>
       </div>

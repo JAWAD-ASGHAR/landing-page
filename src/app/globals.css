@@ -399,8 +399,12 @@ body {
 }
 
 .values-scroll-pin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   overflow: hidden;
   box-sizing: border-box;
+  min-height: 100dvh;
 }
 
 .values-scroll-layout {
@@ -429,23 +433,6 @@ body {
   height: calc(var(--values-card-height) + 1.5rem);
   perspective: 1200px;
   perspective-origin: 50% 50%;
-}
-
-.values-scroll-footer {
-  flex-shrink: 0;
-  margin-top: clamp(2.5rem, 8vh, 5rem);
-  background: #e6e6ea;
-  padding-block: clamp(2rem, 5vh, 3rem);
-  padding-bottom: clamp(2.5rem, 6vh, 4rem);
-}
-
-.values-scroll-footer-intro {
-  margin-bottom: clamp(1.25rem, 3vh, 1.75rem);
-  text-align: center;
-}
-
-.values-scroll-footer-carousel .relative > div {
-  border-radius: 1rem;
 }
 
 .value-card {
