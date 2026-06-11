@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import { SiteShell } from "@/components/layout/SiteShell";
+import { CustomCursor } from "@/components/motion/CustomCursor";
 import { SiteLoader } from "@/components/motion/SiteLoader";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -55,6 +56,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} />
+        <CustomCursor />
         <SiteLoader>
           <SmoothScroll>
             <SiteShell>{children}</SiteShell>

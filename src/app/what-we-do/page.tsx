@@ -1,6 +1,5 @@
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { FloatingCTABar } from "@/components/sections/FloatingCTABar";
 import { HomeChairReveal } from "@/components/sections/HomeChairReveal";
 import { PageHeroSection } from "@/components/sections/PageHeroSection";
 import { ChairCTASection } from "@/components/sections/ChairCTASection";
@@ -45,8 +44,6 @@ export default function WhatWeDoPage() {
       />
 
       <WhatWeDoTimelineSection />
-
-      <FloatingCTABar />
 
       <section className="section-padding overflow-hidden bg-[#e6e6ea]">
         <div className="container-main">

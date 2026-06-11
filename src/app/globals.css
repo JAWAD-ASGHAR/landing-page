@@ -59,6 +59,27 @@ body {
   overflow-x: clip;
 }
 
+@media (pointer: fine) and (hover: hover) {
+  html.custom-cursor-active,
+  html.custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+.custom-cursor__ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: transparent;
+  border: 2.5px solid #111111;
+  transition: border-color 0.2s ease;
+}
+
+.custom-cursor--on-dark .custom-cursor__ring {
+  border-color: #ffffff;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -747,7 +768,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .floating-cta-bar {
+  .consultation-prompt__panel,
+  .consultation-prompt__trigger {
     transition: none !important;
   }
 }
