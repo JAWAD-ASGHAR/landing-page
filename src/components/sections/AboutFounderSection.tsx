@@ -14,10 +14,10 @@ export function AboutFounderSection() {
           <ScrollReveal direction="left">
             <div className="relative">
               <ParallaxImage
-                src="/home/Practice Growth.webp"
-                alt="Healthcare professional preparing for patient care"
+                src={founder.image}
+                alt={founder.imageAlt}
                 className="aspect-[4/5] min-h-[24rem] rounded-3xl"
-                imageClassName="object-top"
+                imageClassName="object-cover object-[center_15%]"
                 speed={0.14}
                 sizes="(min-width: 1024px) 42vw, 100vw"
               />
@@ -36,20 +36,25 @@ export function AboutFounderSection() {
 
           <ParallaxLayer speed={0.04}>
             <ScrollReveal direction="right" delay={0.1}>
-              <p className="eyebrow mb-4">Founder & GP Specialist</p>
+              <p className="eyebrow mb-4">{founder.role}</p>
               <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
                 {founder.name}
               </h2>
-              <p className="mt-2 text-sm font-medium text-accent-blue">
-                {founder.credentials}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">{founder.title}</p>
               <p className="mt-8 text-base leading-relaxed text-muted-foreground">
                 {founder.bio}
               </p>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
                 {founder.extendedBio}
               </p>
+              <div className="mt-10 border-t border-dark/10 pt-8">
+                <p className="heading-display text-lg font-semibold text-foreground">
+                  {founder.name}
+                </p>
+                <p className="mt-1 text-sm font-medium text-accent-blue">
+                  {founder.credentials}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{founder.title}</p>
+              </div>
               <div className="mt-8">
                 <Button href="/contact">Book a Free Consultation</Button>
               </div>

@@ -176,8 +176,7 @@ function MobileMenu({ light = false, onClose, pathname }: MobileMenuProps) {
 export function Header({ placement = "site" }: HeaderProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const [scrolled, setScrolled] = useState(false);
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(!isHome);
   const [mobileOpen, setMobileOpen] = useState(false);
   const lastScrollY = useRef(0);
 
@@ -186,7 +185,8 @@ export function Header({ placement = "site" }: HeaderProps) {
 
   useEffect(() => {
     setMobileOpen(false);
-  }, [pathname]);
+    setRevealed(!isHome);
+  }, [pathname, isHome]);
 
   useEffect(() => {
     if (!mobileOpen) {
@@ -201,11 +201,13 @@ export function Header({ placement = "site" }: HeaderProps) {
   }, [mobileOpen]);
 
   useEffect(() => {
-    if (isHome && placement === "site") {
-      const onScroll = () => {
-        const y = window.scrollY;
-        const scrollingUp = y < lastScrollY.current;
+    if (placement !== "site") return;
 
+    const onScroll = () => {
+      const y = window.scrollY;
+      const scrollingUp = y < lastScrollY.current;
+
+      if (isHome) {
         if (y <= 8) {
           setRevealed(false);
         } else if (scrollingUp) {
@@ -213,16 +215,17 @@ export function Header({ placement = "site" }: HeaderProps) {
         } else {
           setRevealed(false);
         }
+      } else if (y <= 8) {
+        setRevealed(true);
+      } else if (scrollingUp) {
+        setRevealed(true);
+      } else {
+        setRevealed(false);
+      }
 
-        lastScrollY.current = y;
-      };
+      lastScrollY.current = y;
+    };
 
-      onScroll();
-      window.addEventListener("scroll", onScroll, { passive: true });
-      return () => window.removeEventListener("scroll", onScroll);
-    }
-
-    const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -260,34 +263,14 @@ export function Header({ placement = "site" }: HeaderProps) {
     );
   }
 
-  if (isHome) {
-    return (
-      <>
-        <header
-          className={cn(
-            "fixed inset-x-0 top-0 z-50 border-b border-border bg-white transition-transform duration-300 ease-out",
-            revealed
-              ? "translate-y-0 shadow-sm"
-              : "-translate-y-full pointer-events-none",
-          )}
-        >
-          <HeaderBar
-            mobileOpen={mobileOpen}
-            onToggleMobile={toggleMobile}
-            pathname={pathname}
-          />
-        </header>
-        {mobileMenu}
-      </>
-    );
-  }
-
   return (
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 border-b border-border bg-white transition-shadow duration-300",
-          scrolled && "shadow-sm",
+          "fixed inset-x-0 top-0 z-50 border-b border-border bg-white transition-transform duration-300 ease-out",
+          revealed
+            ? "translate-y-0 shadow-sm"
+            : "-translate-y-full pointer-events-none",
         )}
       >
         <HeaderBar

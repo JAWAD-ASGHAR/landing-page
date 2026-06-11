@@ -1,18 +1,16 @@
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AboutFounderSection } from "@/components/sections/AboutFounderSection";
+import { AboutValuesSection } from "@/components/sections/AboutValuesSection";
 import { FAQAccordion } from "@/components/sections/FAQAccordion";
 import { HomeChairReveal } from "@/components/sections/HomeChairReveal";
 import { HowItWorks, HowItWorksIntro } from "@/components/sections/HowItWorks";
 import { PageHeroSection } from "@/components/sections/PageHeroSection";
 import { ChairCTASection } from "@/components/sections/ChairCTASection";
-import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
 import {
   aboutPage,
-  aboutValues,
   faqs,
   services,
-  testimonials,
 } from "@/lib/content";
 import {
   breadcrumbJsonLd,
@@ -107,44 +105,7 @@ export default function AboutPage() {
 
       <AboutFounderSection />
 
-      <section className="section-padding overflow-hidden bg-white">
-        <div className="container-main">
-          <ScrollReveal>
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="eyebrow mb-5">Values</p>
-              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
-                What guides our work
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {aboutValues.map((value, index) => (
-              <ScrollReveal key={value} delay={index * 0.05}>
-                <div className="rounded-3xl bg-[#e6e6ea] p-6 text-sm leading-relaxed text-muted-foreground">
-                  {value}
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding overflow-hidden bg-[#e6e6ea]">
-        <div className="container-main">
-          <ScrollReveal>
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="eyebrow mb-5">Testimonials</p>
-              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
-                What our clients say
-              </h2>
-            </div>
-          </ScrollReveal>
-          <div className="mt-12">
-            <TestimonialCarousel testimonials={testimonials} />
-          </div>
-        </div>
-      </section>
+      <AboutValuesSection />
 
       <section className="section-padding overflow-hidden bg-dark text-white">
         <div className="container-main">

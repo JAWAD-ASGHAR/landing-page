@@ -256,18 +256,24 @@ export const testimonials = [
       "Practice Pro Solutions completely streamlined my clinic operations. Their virtual reception service means no patient call is ever missed, and their bookkeeping support has taken a huge weight off my shoulders.",
     name: "Dr. Sarah Mitchell",
     role: "General Practitioner, Sydney",
+    image: "/testimonials/dr-sarah-mitchell.png",
+    imageAlt: "Illustrated portrait of Dr. Sarah Mitchell",
   },
   {
     quote:
       "Their team has been outstanding in helping us with medical supplies and financial management. Reliable, professional, and always quick to respond — exactly what every practice needs.",
     name: "Michael Roberts",
     role: "Practice Manager, Melbourne",
+    image: "/testimonials/michael-roberts.png",
+    imageAlt: "Illustrated portrait of Michael Roberts",
   },
   {
     quote:
       "When I purchased my GP practice, Practice Pro Solutions guided me through the entire process. Their support made the transition smooth, stress-free, and incredibly efficient.",
-    name: "Emily Chen",
+    name: "James Walsh",
     role: "Clinic Owner, Brisbane",
+    image: "/testimonials/james-walsh.png",
+    imageAlt: "Illustrated portrait of James Walsh",
   },
 ] as const;
 
@@ -284,8 +290,11 @@ export const clientLogos = [
 
 export const founder = {
   name: "Dr. Faisal Khan",
+  role: "Founder & GP Specialist",
   title: "Founder | GP Specialist | Mentor",
   credentials: "MBBS, FRACGP, FAMAC",
+  image: "/doctor.png",
+  imageAlt: "Dr. Faisal Khan, Founder and GP Specialist at Practice Pro Solutions",
   quote: "We exist to make healthcare simpler for providers and better for patients.",
   bio: "With more than 22 years of experience in general practice and integrative medicine, Dr. Faisal Khan has built a reputation as a trusted leader in Australian healthcare. Holding qualifications including MBBS, FRACGP, and FAMAC, he combines clinical excellence with a holistic, patient-centered approach to care.",
   extendedBio:
@@ -356,14 +365,51 @@ export const faqs = [
   },
 ] as const;
 
-export const aboutValues = [
-  "Clear, reliable support for your practice",
-  "Professional solutions tailored to healthcare",
-  "Patient care at the heart of what we do",
-  "Secure systems that protect sensitive information",
-  "Experienced team with a focus on efficiency and accuracy",
-  "Flexible services designed to suit your practice needs",
-] as const;
+export type AboutValue = {
+  id: string;
+  label: string;
+  text: string;
+  color: string;
+};
+
+export const aboutValues: AboutValue[] = [
+  {
+    id: "reliable-support",
+    label: "Reliable",
+    text: "Clear, reliable support for your practice",
+    color: "#4a7fd4",
+  },
+  {
+    id: "healthcare-tailored",
+    label: "Tailored",
+    text: "Professional solutions tailored to healthcare",
+    color: "#2d6a6a",
+  },
+  {
+    id: "patient-first",
+    label: "Patient-first",
+    text: "Patient care at the heart of what we do",
+    color: "#5c4d7a",
+  },
+  {
+    id: "secure-systems",
+    label: "Secure",
+    text: "Secure systems that protect sensitive information",
+    color: "#3d5a80",
+  },
+  {
+    id: "experienced-team",
+    label: "Experienced",
+    text: "Experienced team with a focus on efficiency and accuracy",
+    color: "#4a6b5c",
+  },
+  {
+    id: "flexible-services",
+    label: "Flexible",
+    text: "Flexible services designed to suit your practice needs",
+    color: "#8b5a4a",
+  },
+];
 
 export const trustSignals = [
   "Australian privacy standards",
