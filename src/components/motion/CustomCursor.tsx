@@ -212,7 +212,17 @@ export function CustomCursor() {
 
     const release = () => setClicking(false);
 
+    let scrollRaf = 0;
+    const onScroll = () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        updateFromPointer(cursorX.get(), cursorY.get());
+      });
+    };
+
     window.addEventListener("mousemove", move, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("resize", onResize, { passive: true });
     document.documentElement.addEventListener("mouseleave", hide);
     document.documentElement.addEventListener("mouseenter", show);
@@ -222,7 +232,9 @@ export function CustomCursor() {
     return () => {
       measureEl.remove();
       document.documentElement.classList.remove("custom-cursor-active");
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
       window.removeEventListener("mousemove", move);
+      window.removeEventListener("scroll", onScroll, { capture: true });
       window.removeEventListener("resize", onResize);
       document.documentElement.removeEventListener("mouseleave", hide);
       document.documentElement.removeEventListener("mouseenter", show);
