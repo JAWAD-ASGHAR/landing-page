@@ -575,3 +575,121 @@ body {
     gap: clamp(2rem, 6vh, 2.75rem);
   }
 }
+
+/* About — service cards mouse glow */
+@property --mouse-x {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --mouse-y {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --glow-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.service-glow-card {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --glow-opacity: 0;
+  position: relative;
+  border-radius: 1.5rem;
+  isolation: isolate;
+  transition:
+    --mouse-x 0.12s ease-out,
+    --mouse-y 0.12s ease-out,
+    --glow-opacity 0.35s ease;
+}
+
+.service-glow-card-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    280px circle at var(--mouse-x) var(--mouse-y),
+    rgba(160, 195, 255, 0.95),
+    rgba(74, 127, 212, 0.55) 22%,
+    rgba(255, 255, 255, 0.14) 42%,
+    rgba(255, 255, 255, 0.04) 68%
+  );
+  opacity: var(--glow-opacity);
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.service-glow-card-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    360px circle at var(--mouse-x) var(--mouse-y),
+    rgba(74, 127, 212, 0.18),
+    rgba(74, 127, 212, 0.06) 38%,
+    transparent 62%
+  );
+  opacity: var(--glow-opacity);
+  pointer-events: none;
+}
+
+.service-glow-card-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.service-glow-card-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    320px circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.07),
+    transparent 55%
+  );
+  opacity: var(--glow-opacity);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-glow-card {
+    transition: --glow-opacity 0.01ms;
+  }
+
+  .service-glow-card-shine {
+    background: linear-gradient(
+      135deg,
+      rgba(74, 127, 212, 0.35),
+      rgba(255, 255, 255, 0.08)
+    );
+  }
+
+  .service-glow-card-spotlight {
+    background: radial-gradient(
+      circle at 50% 0%,
+      rgba(74, 127, 212, 0.1),
+      transparent 70%
+    );
+  }
+}
