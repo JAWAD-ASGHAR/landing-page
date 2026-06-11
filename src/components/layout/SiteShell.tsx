@@ -21,6 +21,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <main
         className={cn(
           "min-h-0 flex-1 overflow-visible",
+          "pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0",
           !isHome && "pt-[4.5rem]",
           useReveal && "home-main-reveal",
         )}

@@ -1,6 +1,50 @@
 export const CLICKABLE_SELECTOR =
   'a, button, [role="button"], input, textarea, select, label[for], summary, .cursor-pointer, [data-cursor-hover]';
 
+const RING_SAMPLE_COUNT = 12;
+
+function isInteractive(element: Element) {
+  if (
+    element instanceof HTMLButtonElement ||
+    element instanceof HTMLInputElement ||
+    element instanceof HTMLTextAreaElement ||
+    element instanceof HTMLSelectElement
+  ) {
+    return !element.disabled;
+  }
+
+  return element.getAttribute("aria-disabled") !== "true";
+}
+
+export function findClickableUnderCursor(
+  clientX: number,
+  clientY: number,
+  radius: number,
+): Element | null {
+  const center = document.elementFromPoint(clientX, clientY);
+  const centerClickable = center?.closest(CLICKABLE_SELECTOR) ?? null;
+  if (centerClickable && isInteractive(centerClickable)) {
+    return centerClickable;
+  }
+
+  for (let index = 0; index < RING_SAMPLE_COUNT; index += 1) {
+    const angle = (index / RING_SAMPLE_COUNT) * Math.PI * 2;
+
+    for (const scale of [1, 0.55]) {
+      const x = clientX + Math.cos(angle) * radius * scale;
+      const y = clientY + Math.sin(angle) * radius * scale;
+      const sample = document.elementFromPoint(x, y);
+      const clickable = sample?.closest(CLICKABLE_SELECTOR) ?? null;
+
+      if (clickable && isInteractive(clickable)) {
+        return clickable;
+      }
+    }
+  }
+
+  return null;
+}
+
 const SERVICE_LABELS: Record<string, string> = {
   "practice-media": "Patient trust",
   "virtual-receptionists": "Answer calls",

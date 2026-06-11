@@ -65,7 +65,7 @@ export function FloatingCTABar({
             type="button"
             aria-label="Close"
             onClick={() => setOpen(false)}
-            className="inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue"
+            className="inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue"
           >
             <X size={14} strokeWidth={2.25} aria-hidden />
           </button>
@@ -88,7 +88,7 @@ export function FloatingCTABar({
           open ? "Close consultation prompt" : "Open consultation prompt"
         }
         onClick={() => setOpen((current) => !current)}
-        className="consultation-prompt__trigger inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-border/80 bg-white/95 text-foreground shadow-sm backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue"
+        className="consultation-prompt__trigger inline-flex size-11 min-h-11 min-w-11 touch-manipulation cursor-pointer items-center justify-center rounded-full border border-border/80 bg-white/95 text-foreground shadow-sm backdrop-blur-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-white hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue"
       >
         {open ? (
           <X size={18} strokeWidth={2.25} aria-hidden />
