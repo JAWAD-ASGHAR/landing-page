@@ -1,7 +1,6 @@
 export const CLICKABLE_SELECTOR =
   'a, button, [role="button"], input, textarea, select, label[for], summary, .cursor-pointer, [data-cursor-hover]';
 
-const RING_SAMPLE_COUNT = 12;
 const CTA_TEXT_MAX_LENGTH = 48;
 
 function isInteractive(element: Element) {
@@ -20,27 +19,12 @@ function isInteractive(element: Element) {
 export function findClickableUnderCursor(
   clientX: number,
   clientY: number,
-  radius: number,
 ): Element | null {
   const center = document.elementFromPoint(clientX, clientY);
-  const centerClickable = center?.closest(CLICKABLE_SELECTOR) ?? null;
-  if (centerClickable && isInteractive(centerClickable)) {
-    return centerClickable;
-  }
+  const clickable = center?.closest(CLICKABLE_SELECTOR) ?? null;
 
-  for (let index = 0; index < RING_SAMPLE_COUNT; index += 1) {
-    const angle = (index / RING_SAMPLE_COUNT) * Math.PI * 2;
-
-    for (const scale of [1, 0.55]) {
-      const x = clientX + Math.cos(angle) * radius * scale;
-      const y = clientY + Math.sin(angle) * radius * scale;
-      const sample = document.elementFromPoint(x, y);
-      const clickable = sample?.closest(CLICKABLE_SELECTOR) ?? null;
-
-      if (clickable && isInteractive(clickable)) {
-        return clickable;
-      }
-    }
+  if (clickable && isInteractive(clickable)) {
+    return clickable;
   }
 
   return null;
