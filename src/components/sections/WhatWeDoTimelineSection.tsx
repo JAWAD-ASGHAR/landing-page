@@ -115,7 +115,7 @@ function TimelineRow({
 
 export function WhatWeDoTimelineSection() {
   return (
-    <section className="what-we-do-timeline section-padding overflow-hidden bg-[#f5f5f7] pb-28">
+    <section className="what-we-do-timeline section-padding overflow-hidden bg-muted pb-28">
       <div className="container-main">
         <ScrollReveal>
           <div className="mx-auto max-w-3xl text-center">

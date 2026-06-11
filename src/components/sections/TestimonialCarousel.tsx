@@ -72,7 +72,7 @@ export function TestimonialCarousel({
                     </footer>
                   </div>
 
-                  <div className="relative hidden min-h-[18rem] bg-[#f5f5f7] lg:block">
+                  <div className="relative hidden min-h-[18rem] bg-muted lg:block">
                     <Image
                       src={item.image}
                       alt={item.imageAlt}
