@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { navLinks, site } from "@/lib/content";
+import { useInvertedTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -86,24 +88,28 @@ function HeaderBar({
         <span className="hidden lg:block" aria-hidden />
       )}
 
-      <div className="hidden justify-end lg:flex lg:justify-self-end">
+      <div className="hidden items-center justify-end gap-3 lg:flex lg:justify-self-end">
+        <ThemeToggle light={light} />
         <Button href="/contact" variant={light ? "hero" : "primary"} cursorLabel="Book">
           Book Consultation
         </Button>
       </div>
 
-      <button
-        type="button"
-        className={cn(
-          "inline-flex shrink-0 items-center justify-end p-2 lg:hidden",
-          light ? "text-white" : "text-foreground",
-        )}
+      <div className="flex shrink-0 items-center gap-1 lg:hidden">
+        <ThemeToggle light={light} />
+        <button
+          type="button"
+          className={cn(
+            "inline-flex items-center justify-end p-2",
+            light ? "text-white" : "text-foreground",
+          )}
         aria-label={mobileOpen ? "Close menu" : "Open menu"}
         aria-expanded={mobileOpen}
-        onClick={onToggleMobile}
-      >
-        {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-      </button>
+          onClick={onToggleMobile}
+        >
+          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </div>
     </div>
   );
 }
@@ -127,14 +133,17 @@ function MobileMenu({ light = false, onClose, pathname }: MobileMenuProps) {
     >
       <div className="container-main flex h-[4.5rem] shrink-0 items-center justify-between gap-3">
         <SiteLogo light={light} />
-        <button
-          type="button"
-          className={cn("p-2", light ? "text-white" : "text-foreground")}
-          aria-label="Close menu"
-          onClick={onClose}
-        >
-          <X size={22} />
-        </button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle light={light} />
+          <button
+            type="button"
+            className={cn("p-2", light ? "text-white" : "text-foreground")}
+            aria-label="Close menu"
+            onClick={onClose}
+          >
+            <X size={22} />
+          </button>
+        </div>
       </div>
 
       <nav
@@ -177,6 +186,10 @@ function MobileMenu({ light = false, onClose, pathname }: MobileMenuProps) {
 export function Header({ placement = "site" }: HeaderProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const { inverted } = useInvertedTheme();
+  const isHero = placement === "hero";
+  const barLight = isHero ? true : inverted;
+  const menuLight = isHero ? !inverted : inverted;
   const [revealed, setRevealed] = useState(!isHome);
   const [mobileOpen, setMobileOpen] = useState(false);
   const lastScrollY = useRef(0);
@@ -234,7 +247,7 @@ export function Header({ placement = "site" }: HeaderProps) {
 
   const mobileMenu = mobileOpen ? (
     <MobileMenu
-      light={placement === "hero"}
+      light={menuLight}
       onClose={closeMobile}
       pathname={pathname}
     />
@@ -252,7 +265,7 @@ export function Header({ placement = "site" }: HeaderProps) {
           )}
         >
           <HeaderBar
-            light
+            light={barLight}
             mobileOpen={mobileOpen}
             onToggleMobile={toggleMobile}
             pathname={pathname}
@@ -275,6 +288,7 @@ export function Header({ placement = "site" }: HeaderProps) {
         )}
       >
         <HeaderBar
+          light={barLight}
           mobileOpen={mobileOpen}
           onToggleMobile={toggleMobile}
           pathname={pathname}

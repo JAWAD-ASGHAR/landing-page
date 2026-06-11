@@ -10,6 +10,7 @@ import {
   rootMetadata,
   webSiteJsonLd,
 } from "@/lib/seo";
+import { themeInitScript } from "@/lib/theme-config";
 import "./globals.css";
 
 const inter = Inter({
@@ -50,7 +51,11 @@ export default function RootLayout({
     <html
       lang="en-AU"
       className={`${inter.variable} ${sourceSerif.variable} h-full scroll-smooth antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body
         className="min-h-full flex flex-col font-sans text-foreground"
         suppressHydrationWarning

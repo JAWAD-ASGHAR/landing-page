@@ -874,3 +874,152 @@ body {
     transition: none !important;
   }
 }
+
+/* Inverted theme — swap light and dark section surfaces site-wide */
+html[data-theme="inverted"] {
+  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #f3f4f6;
+  --muted: #161616;
+  --muted-foreground: #9ca3af;
+  --border: #2a2a2a;
+  --dark: #ffffff;
+  --dark-muted: #ececef;
+  --accent-blue-light: #162032;
+  --cta-soft: #141414;
+}
+
+html[data-theme="inverted"] .bg-white {
+  background-color: var(--background);
+}
+
+html[data-theme="inverted"] .bg-dark {
+  background-color: var(--dark);
+}
+
+html[data-theme="inverted"] .bg-dark-muted,
+html[data-theme="inverted"] .hover\:bg-dark-muted:hover {
+  background-color: var(--dark-muted);
+}
+
+html[data-theme="inverted"] .bg-\[\#e6e6ea\] {
+  background-color: #1a1a1f;
+}
+
+html[data-theme="inverted"] .bg-dark,
+html[data-theme="inverted"] .bg-dark-muted {
+  color: #111111;
+}
+
+html[data-theme="inverted"] .bg-dark .text-white,
+html[data-theme="inverted"] .bg-dark.text-white,
+html[data-theme="inverted"] .bg-dark-muted .text-white,
+html[data-theme="inverted"] .bg-dark-muted.text-white,
+html[data-theme="inverted"] .bg-dark .text-white\/45,
+html[data-theme="inverted"] .bg-dark .text-white\/55,
+html[data-theme="inverted"] .bg-dark .text-white\/65,
+html[data-theme="inverted"] .bg-dark .text-white\/70,
+html[data-theme="inverted"] .bg-dark .text-white\/75,
+html[data-theme="inverted"] .bg-dark .text-white\/80,
+html[data-theme="inverted"] .bg-dark .text-white\/85,
+html[data-theme="inverted"] .bg-dark .text-white\/90,
+html[data-theme="inverted"] .bg-dark.text-white\/55,
+html[data-theme="inverted"] .bg-dark.text-white\/65,
+html[data-theme="inverted"] .bg-dark.text-white\/75 {
+  color: #111111;
+}
+
+html[data-theme="inverted"] .bg-dark .text-white\/45,
+html[data-theme="inverted"] .bg-dark .text-white\/55 {
+  color: rgb(17 17 17 / 0.55);
+}
+
+html[data-theme="inverted"] .bg-dark .text-white\/65,
+html[data-theme="inverted"] .bg-dark .text-white\/70 {
+  color: rgb(17 17 17 / 0.7);
+}
+
+html[data-theme="inverted"] .bg-dark .text-white\/75,
+html[data-theme="inverted"] .bg-dark .text-white\/80 {
+  color: rgb(17 17 17 / 0.8);
+}
+
+html[data-theme="inverted"] .bg-dark .text-white\/85,
+html[data-theme="inverted"] .bg-dark .text-white\/90 {
+  color: rgb(17 17 17 / 0.9);
+}
+
+html[data-theme="inverted"] .bg-dark .border-white\/15,
+html[data-theme="inverted"] .bg-dark .border-white\/50 {
+  border-color: rgb(17 17 17 / 0.2);
+}
+
+html[data-theme="inverted"] .bg-dark .bg-white\/5,
+html[data-theme="inverted"] .bg-dark .bg-white\/10,
+html[data-theme="inverted"] .bg-dark .hover\:bg-white\/5:hover,
+html[data-theme="inverted"] .bg-dark .hover\:bg-white\/10:hover {
+  background-color: rgb(17 17 17 / 0.08);
+}
+
+html[data-theme="inverted"] .bg-dark .bg-white\/45 {
+  background-color: rgb(17 17 17 / 0.45);
+}
+
+html[data-theme="inverted"] .bg-dark .bg-white,
+html[data-theme="inverted"] .bg-dark .bg-white\/80,
+html[data-theme="inverted"] .bg-dark .bg-white\/95 {
+  background-color: #0a0a0a;
+  color: #f3f4f6;
+}
+
+html[data-theme="inverted"] .bg-dark .text-\[\#111111\] {
+  color: #f3f4f6;
+}
+
+html[data-theme="inverted"] .bg-white {
+  color: var(--foreground);
+}
+
+html[data-theme="inverted"] .bg-white\/95,
+html[data-theme="inverted"] .bg-white\/80 {
+  background-color: rgb(10 10 10 / 0.95);
+}
+
+html[data-theme="inverted"] .bg-white\/10,
+html[data-theme="inverted"] .hover\:bg-white\/10:hover {
+  background-color: rgb(255 255 255 / 0.08);
+}
+
+html[data-theme="inverted"] .text-\[\#111111\] {
+  color: #f3f4f6;
+}
+
+html[data-theme="inverted"] .bg-dark.text-white.hover\:bg-dark-muted:hover {
+  color: #111111;
+}
+
+@keyframes vt-clip-expand {
+  from {
+    clip-path: circle(0px at var(--vt-x) var(--vt-y));
+  }
+  to {
+    clip-path: circle(150vmax at var(--vt-x) var(--vt-y));
+  }
+}
+
+::view-transition-old(root) {
+  animation: none;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  animation: vt-clip-expand 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
