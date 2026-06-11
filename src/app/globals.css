@@ -560,3 +560,18 @@ body {
 .value-card--static .value-card-inner {
   min-height: 12.5rem;
 }
+
+@media (max-width: 639px) {
+  .values-scroll-section {
+    --values-card-width: clamp(10.5rem, 56vw, 17rem);
+    --values-card-height: clamp(10rem, 34vw, 12.5rem);
+  }
+
+  .values-scroll-stage {
+    height: calc(var(--values-card-height) + 2.75rem);
+  }
+
+  .values-scroll-layout {
+    gap: clamp(2rem, 6vh, 2.75rem);
+  }
+}

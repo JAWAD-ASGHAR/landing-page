@@ -9,19 +9,60 @@ import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
 import { aboutValues, testimonials } from "@/lib/content";
 import { useMounted } from "@/lib/use-mounted";
 
-const CARD_SPREAD = 0.38;
+const MOBILE_BREAKPOINT = 640;
 const SCROLL_PER_CARD_VH = 0.55;
+const SCROLL_PER_CARD_VH_MOBILE = 0.72;
 
-function getCardMotion(cardIndex: number, scrollProgress: number, total: number) {
+type CardMotionConfig = {
+  spread: number;
+  xMult: number;
+  rotateMult: number;
+  scaleDrop: number;
+  opacityMult: number;
+  yMult: number;
+};
+
+const DESKTOP_MOTION: CardMotionConfig = {
+  spread: 0.38,
+  xMult: 58,
+  rotateMult: -14,
+  scaleDrop: 0.18,
+  opacityMult: 0.92,
+  yMult: 14,
+};
+
+const MOBILE_MOTION: CardMotionConfig = {
+  spread: 0.48,
+  xMult: 102,
+  rotateMult: -9,
+  scaleDrop: 0.24,
+  opacityMult: 1.08,
+  yMult: 6,
+};
+
+function getCardMotionConfig(): CardMotionConfig {
+  if (typeof window === "undefined") {
+    return DESKTOP_MOTION;
+  }
+
+  return window.innerWidth < MOBILE_BREAKPOINT ? MOBILE_MOTION : DESKTOP_MOTION;
+}
+
+function getCardMotion(
+  cardIndex: number,
+  scrollProgress: number,
+  total: number,
+  config: CardMotionConfig,
+) {
   const focus = (cardIndex + 0.5) / total;
-  const distance = (scrollProgress - focus) / CARD_SPREAD;
+  const distance = (scrollProgress - focus) / config.spread;
 
   const absDistance = Math.min(1, Math.abs(distance));
-  const x = distance * 58;
-  const rotate = distance * -14;
-  const scale = 1 - absDistance * 0.18;
-  const opacity = Math.max(0, 1 - absDistance * 0.92);
-  const y = Math.sin(cardIndex * 1.35) * 14;
+  const x = distance * config.xMult;
+  const rotate = distance * config.rotateMult;
+  const scale = 1 - absDistance * config.scaleDrop;
+  const opacity = Math.max(0, 1 - absDistance * config.opacityMult);
+  const y = Math.sin(cardIndex * 1.35) * config.yMult;
   const zIndex = Math.round((1 - absDistance) * 100);
 
   return { x, y, rotate, scale, opacity, zIndex };
@@ -117,17 +158,19 @@ export function AboutValuesSection() {
     });
 
     const updateCards = (progress: number) => {
+      const motion = getCardMotionConfig();
       let bestIndex = 0;
       let bestDistance = Infinity;
 
       cards.forEach((card, index) => {
         const focus = (index + 0.5) / total;
-        const distance = (progress - focus) / CARD_SPREAD;
+        const distance = (progress - focus) / motion.spread;
         const absDistance = Math.min(1, Math.abs(distance));
         const { x, y, rotate, scale, opacity, zIndex } = getCardMotion(
           index,
           progress,
           total,
+          motion,
         );
 
         if (absDistance < bestDistance) {
@@ -151,8 +194,14 @@ export function AboutValuesSection() {
       });
     };
 
-    const scrollDistance = () =>
-      window.innerHeight * SCROLL_PER_CARD_VH * (total + 0.15);
+    const scrollDistance = () => {
+      const perCardVh =
+        window.innerWidth < MOBILE_BREAKPOINT
+          ? SCROLL_PER_CARD_VH_MOBILE
+          : SCROLL_PER_CARD_VH;
+
+      return window.innerHeight * perCardVh * (total + 0.15);
+    };
 
     const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,

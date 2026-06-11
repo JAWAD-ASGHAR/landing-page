@@ -1,6 +1,7 @@
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AboutFounderSection } from "@/components/sections/AboutFounderSection";
+import { AboutServicesSection } from "@/components/sections/AboutServicesSection";
 import { AboutValuesSection } from "@/components/sections/AboutValuesSection";
 import { FAQAccordion } from "@/components/sections/FAQAccordion";
 import { HomeChairReveal } from "@/components/sections/HomeChairReveal";
@@ -10,7 +11,6 @@ import { ChairCTASection } from "@/components/sections/ChairCTASection";
 import {
   aboutPage,
   faqs,
-  services,
 } from "@/lib/content";
 import {
   breadcrumbJsonLd,
@@ -70,38 +70,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-padding overflow-hidden bg-dark text-white">
-        <div className="container-main">
-          <ScrollReveal>
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="mb-5 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-white/45">
-                What We Offer
-              </p>
-              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
-                Support across every stage of practice growth
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            {services.map((service, index) => (
-              <ScrollReveal key={service.id} delay={index * 0.06}>
-                <article className="h-full rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-7">
-                  <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-white/40">
-                    {service.shortTitle}
-                  </p>
-                  <h3 className="heading-display mt-3 text-xl font-semibold">
-                    {service.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-white/55">
-                    {service.description}
-                  </p>
-                </article>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <AboutServicesSection />
 
       <AboutFounderSection />
 
