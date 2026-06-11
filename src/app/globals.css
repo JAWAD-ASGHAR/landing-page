@@ -680,3 +680,74 @@ body {
     );
   }
 }
+
+/* What We Do — alternating timeline layout */
+.what-we-do-timeline__track {
+  isolation: isolate;
+}
+
+.what-we-do-timeline__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--border) 8%,
+    var(--border) 92%,
+    transparent
+  );
+}
+
+.what-we-do-timeline__row {
+  position: relative;
+}
+
+.what-we-do-timeline__marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+}
+
+.what-we-do-timeline__marker-dot {
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border: 2px solid var(--border);
+  border-radius: 9999px;
+  background: var(--background);
+  box-shadow: 0 0 0 4px #f5f5f7;
+}
+
+.what-we-do-timeline__bullet {
+  margin-top: 0.45rem;
+  height: 0.3125rem;
+  width: 0.3125rem;
+  flex-shrink: 0;
+  background: var(--accent-blue);
+}
+
+.what-we-do-timeline__content {
+  max-width: 28rem;
+}
+
+@media (min-width: 1024px) {
+  .what-we-do-timeline__copy:not(.order-2) .what-we-do-timeline__content {
+    margin-inline: 0 auto;
+  }
+
+  .what-we-do-timeline__copy.order-2 .what-we-do-timeline__content {
+    margin-inline: auto 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-cta-bar {
+    transition: none !important;
+  }
+}

@@ -1,11 +1,12 @@
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { FloatingCTABar } from "@/components/sections/FloatingCTABar";
 import { HomeChairReveal } from "@/components/sections/HomeChairReveal";
 import { PageHeroSection } from "@/components/sections/PageHeroSection";
 import { ChairCTASection } from "@/components/sections/ChairCTASection";
-import { ServiceDetailSection } from "@/components/sections/ServiceDetailSection";
 import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
-import { services, testimonials, whatWeDoPage } from "@/lib/content";
+import { WhatWeDoTimelineSection } from "@/components/sections/WhatWeDoTimelineSection";
+import { testimonials, whatWeDoPage } from "@/lib/content";
 import {
   breadcrumbJsonLd,
   createPageMetadata,
@@ -43,27 +44,9 @@ export default function WhatWeDoPage() {
         tall
       />
 
-      <section className="section-padding overflow-hidden bg-white">
-        <div className="container-main">
-          <ScrollReveal>
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="eyebrow mb-5">Overview</p>
-              <h2 className="heading-display text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
-                Comprehensive support for every stage of practice growth
-              </h2>
-              <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-                From building your brand to managing daily operations, finances,
-                and supplies — every service is designed to make your practice
-                more efficient, compliant, and patient-focused.
-              </p>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      <WhatWeDoTimelineSection />
 
-      {services.map((service, index) => (
-        <ServiceDetailSection key={service.id} service={service} index={index} />
-      ))}
+      <FloatingCTABar />
 
       <section className="section-padding overflow-hidden bg-[#e6e6ea]">
         <div className="container-main">
