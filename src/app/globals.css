@@ -27,6 +27,7 @@
   --stack-header-z: 30;
   --stack-card-z-base: 50;
   --footer-reveal-height: clamp(28rem, 58vh, 32rem);
+  --footer-reveal-height-mobile: clamp(28rem, 58dvh, 32rem);
 }
 
 @theme inline {
@@ -108,6 +109,9 @@ body {
   display: inline-flex;
   align-items: baseline;
   gap: 0.35em;
+  max-width: 100%;
+  font-size: clamp(0.8125rem, 3.5vw, 1.5rem);
+  white-space: nowrap;
   text-decoration: none;
   transition: opacity 0.25s ease;
 }
@@ -118,18 +122,26 @@ body {
 
 .site-logo-mark {
   font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+  font-size: 1em;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.1;
+  white-space: nowrap;
 }
 
 .site-logo-suffix {
   font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: clamp(1.125rem, 2.4vw, 1.5rem);
+  font-size: 1em;
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 1.1;
+  white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .site-logo {
+    font-size: clamp(0.75rem, 3.2vw, 0.875rem);
+  }
 }
 
 .placeholder-skeleton {
@@ -219,11 +231,14 @@ body {
   );
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .home-footer-fixed .footer-display-clip {
   flex-shrink: 0;
+  height: calc(
+    var(--footer-display-size) * 0.68 + env(safe-area-inset-bottom, 0px)
+  );
+  background: var(--background);
 }
 
 .home-footer-fixed .footer-utility {
@@ -236,6 +251,18 @@ body {
 }
 
 @media (max-width: 639px) {
+  .home-main-reveal {
+    padding-bottom: calc(
+      var(--footer-reveal-height-mobile) + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  .home-footer-fixed {
+    height: calc(
+      var(--footer-reveal-height-mobile) + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
   .footer-display-clip {
     --footer-display-size: clamp(3.5rem, 16vw, 5rem);
   }

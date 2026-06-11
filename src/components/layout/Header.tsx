@@ -55,11 +55,14 @@ function HeaderBar({
   showDesktopNav = true,
 }: HeaderBarProps) {
   return (
-    <div className="container-main grid h-[4.5rem] grid-cols-[1fr_auto_1fr] items-center">
+    <div className="container-main flex h-[4.5rem] items-center justify-between gap-3 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center">
       <SiteLogo light={light} />
 
       {showDesktopNav ? (
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Main">
+        <nav
+          className="hidden items-center gap-8 lg:flex lg:justify-self-center"
+          aria-label="Main"
+        >
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -83,7 +86,7 @@ function HeaderBar({
         <span className="hidden lg:block" aria-hidden />
       )}
 
-      <div className="hidden justify-end lg:flex">
+      <div className="hidden justify-end lg:flex lg:justify-self-end">
         <Button href="/contact" variant={light ? "hero" : "primary"}>
           Book Consultation
         </Button>
@@ -92,7 +95,7 @@ function HeaderBar({
       <button
         type="button"
         className={cn(
-          "col-start-3 inline-flex items-center justify-end p-2 lg:hidden",
+          "inline-flex shrink-0 items-center justify-end p-2 lg:hidden",
           light ? "text-white" : "text-foreground",
         )}
         aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -122,7 +125,7 @@ function MobileMenu({ light = false, onClose, pathname }: MobileMenuProps) {
       aria-modal="true"
       aria-label="Mobile navigation"
     >
-      <div className="container-main flex h-[4.5rem] shrink-0 items-center justify-between">
+      <div className="container-main flex h-[4.5rem] shrink-0 items-center justify-between gap-3">
         <SiteLogo light={light} />
         <button
           type="button"

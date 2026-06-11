@@ -35,7 +35,7 @@ export function HeroSection() {
             {hero.description}
           </p>
           <div className="mt-8">
-            <Button href="/what-we-do" variant="hero">
+            <Button href="#services" variant="hero">
               View Our Services
             </Button>
           </div>

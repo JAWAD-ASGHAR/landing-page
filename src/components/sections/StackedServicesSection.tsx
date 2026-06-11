@@ -256,7 +256,7 @@ export function StackedServicesSection() {
   }, [staticStack]);
 
   return (
-    <section className="stack-section bg-white pt-8">
+    <section id="services" className="stack-section scroll-mt-28 bg-white pt-8">
       <div className="container-main">
         {!staticStack && <StackSectionHeader sticky headerRef={headerRef} />}
 
